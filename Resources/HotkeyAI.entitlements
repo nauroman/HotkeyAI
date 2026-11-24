@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Required for the Mac App Store. -->
+	<key>com.apple.security.app-sandbox</key>
+	<true/>
+	<!-- Calls to OpenAI / Anthropic / Google APIs. -->
+	<key>com.apple.security.network.client</key>
+	<true/>
+	<!-- Loopback listener (127.0.0.1:1455) that receives the "Sign in with ChatGPT" redirect. -->
+	<key>com.apple.security.network.server</key>
+	<true/>
+</dict>
+</plist>
