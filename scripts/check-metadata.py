@@ -9,7 +9,7 @@ text = pathlib.Path(__file__).resolve().parent.parent.joinpath("AppStore/SUBMISS
 failed = False
 for lang, body in re.findall(r"^## (English \(U\.S\.\)|Russian[^\n]*)\n(.*?)(?=^## )", text, re.S | re.M):
     for field, limit in LIMITS.items():
-        m = re.search(r"^\*\*" + re.escape(field) + r"\*\* \(\d+\)\n(.*?)(?=\n\*\*|\Z)", body, re.S | re.M)
+        m = re.search(r"^\*\*" + re.escape(field) + r"\*\* \([^)]*\)\n(.*?)(?=\n\*\*|\Z)", body, re.S | re.M)
         if not m:
             print(f"{lang}: {field} missing"); failed = True; continue
         value = m.group(1).strip()

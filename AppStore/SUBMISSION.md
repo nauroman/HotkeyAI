@@ -25,8 +25,8 @@ Everything to paste into App Store Connect. Character limits are checked by
 **Subtitle** (30)
 Rewrite text with one shortcut
 
-**Promotional text** (170)
-Press ⌥⌘E in any text field to turn your draft into clear, natural English, or ⌥⇧⌘E to fix it in your own language. Runs on your Mac with Apple Intelligence.
+**Promotional text** (170, no ⌥⌘⇧ symbols: App Store Connect rejects them here)
+One shortcut turns your draft into clear, natural English or fixes it in the language you typed, in any app. Runs on your Mac with Apple Intelligence.
 
 **Keywords** (100)
 translate,grammar,proofread,rewrite,writing,english,spelling,editor,polish,shortcut,menu bar,text,AI
@@ -64,8 +64,8 @@ Apple Intelligence requires a compatible Mac with macOS 26 or later and does not
 **Subtitle** (30)
 Текст лучше одним нажатием
 
-**Promotional text** (170)
-Нажмите ⌥⌘E в любом текстовом поле — и черновик станет ясным английским текстом, а ⌥⇧⌘E исправит его на вашем языке. Работает на Mac с Apple Intelligence.
+**Promotional text** (170, no ⌥⌘⇧ symbols: App Store Connect rejects them here)
+Одно сочетание клавиш превращает черновик в ясный английский текст или исправляет его на вашем языке в любом приложении. Работает на Mac с Apple Intelligence.
 
 **Keywords** (100)
 перевод,грамматика,орфография,английский,текст,редактор,исправить,переписать,ИИ,горячие клавиши
