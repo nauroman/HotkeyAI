@@ -163,3 +163,26 @@ import AppKit
         }
     }
 }
+
+@Suite struct AppleCompactPromptTests {
+    @Test func defaultActionsGetCompactPromptAndQuotedText() {
+        let fix = DefaultPrompts.defaultActions[1]
+        let request = DefaultPrompts.appleRequest(for: fix, text: "hola")
+        #expect(request.instructions == DefaultPrompts.compactFix)
+        #expect(request.input == "Correct this text:\n\"\"\"\nhola\n\"\"\"")
+    }
+
+    @Test func customPromptKeepsGuardOnlyWhenStrict() {
+        var action = HotkeyAction(name: "Reply", prompt: "Reply politely.", shortcut: nil)
+        #expect(DefaultPrompts.appleRequest(for: action, text: "x").instructions.contains("Never answer"))
+        action.strictTransform = false
+        #expect(!DefaultPrompts.appleRequest(for: action, text: "x").instructions.contains("Never answer"))
+    }
+
+    @Test func cleanupStripsWrappingQuotesAndCapitalizes() {
+        let actions = DefaultPrompts.defaultActions
+        #expect(DefaultPrompts.cleanAppleOutput("\"hola amigo\"", source: "hola amigo", action: actions[1]) == "Hola amigo")
+        #expect(DefaultPrompts.cleanAppleOutput("\"\"\"\nHi there\n\"\"\"", source: "hi there", action: actions[0]) == "Hi there")
+        #expect(DefaultPrompts.cleanAppleOutput("\"quoted\"", source: "\"quoted\"", action: actions[1]) == "\"quoted\"")
+    }
+}

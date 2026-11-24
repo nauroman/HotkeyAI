@@ -158,11 +158,19 @@ final class AppState {
         guard !model.isEmpty else {
             throw AIError.notConfigured("Choose a \(kind.shortName) model in Settings → AI Providers.")
         }
-        let request = AIRequest(instructions: DefaultPrompts.instructions(for: action),
+        let request: AIRequest
+        if kind == .apple {
+            let compact = DefaultPrompts.appleRequest(for: action, text: text)
+            request = AIRequest(instructions: compact.instructions, input: compact.input,
+                                model: model, reasoningEffort: "")
+        } else {
+            request = AIRequest(instructions: DefaultPrompts.instructions(for: action),
                                 input: DefaultPrompts.userPayload(for: text),
                                 model: model,
                                 reasoningEffort: action.reasoningEffort)
-        return try await provider(for: kind).complete(request)
+        }
+        let result = try await provider(for: kind).complete(request)
+        return kind == .apple ? DefaultPrompts.cleanAppleOutput(result, source: text, action: action) : result
     }
 
     func perform(actionID: UUID) {

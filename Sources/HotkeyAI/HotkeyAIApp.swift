@@ -55,6 +55,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         installMainMenu()
         AppState.shared.start()
+        if ScreenshotMode.isOn {
+            Task { await ScreenshotMode.run() }
+            return
+        }
         if AppState.shared.isFirstLaunch {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { self.runOnboarding() }
         }

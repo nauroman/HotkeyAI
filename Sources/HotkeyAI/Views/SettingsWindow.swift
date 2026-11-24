@@ -32,7 +32,7 @@ final class SettingsWindowController: NSObject, NSWindowDelegate {
     private var window: NSWindow?
     private var tab: SettingsTab = .actions
 
-    func show(tab newTab: SettingsTab? = nil) {
+    func show(tab newTab: SettingsTab? = nil, size: NSSize? = nil) {
         if let newTab { tab = newTab }
         if window == nil {
             let root = SettingsView(tab: Binding(get: { [unowned self] in self.tab },
@@ -55,8 +55,22 @@ final class SettingsWindowController: NSObject, NSWindowDelegate {
                 .environment(AppState.shared)
             window?.contentViewController = NSHostingController(rootView: root)
         }
+        if let size {
+            window?.setContentSize(size)
+            window?.center()
+        }
         NSApp.activate(ignoringOtherApps: true)
         window?.makeKeyAndOrderFront(nil)
+    }
+
+    /// Renders the settings window (title bar included) into a PNG at screen resolution.
+    @discardableResult
+    func capture(to url: URL) -> Bool {
+        guard let frameView = window?.contentView?.superview,
+              let rep = frameView.bitmapImageRepForCachingDisplay(in: frameView.bounds) else { return false }
+        frameView.cacheDisplay(in: frameView.bounds, to: rep)
+        guard let data = rep.representation(using: .png, properties: [:]) else { return false }
+        return (try? data.write(to: url)) != nil
     }
 
     func windowWillClose(_ notification: Notification) {

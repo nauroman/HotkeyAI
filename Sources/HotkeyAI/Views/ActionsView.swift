@@ -52,7 +52,13 @@ struct ActionsView: View {
             }
             .frame(minWidth: 460, maxWidth: .infinity, maxHeight: .infinity)
         }
-        .onAppear { if selection.value == nil { selection.value = state.actions.first?.id } }
+        .onAppear {
+            if let index = ScreenshotMode.pendingActionIndex, state.actions.indices.contains(index) {
+                selection.value = state.actions[index].id
+            } else if selection.value == nil {
+                selection.value = state.actions.first?.id
+            }
+        }
     }
 
     private func binding(_ id: UUID) -> Binding<HotkeyAction> {
@@ -140,6 +146,7 @@ struct ActionDetailView: View {
     private var kind: ProviderKind { action.provider ?? state.defaultProvider }
 
     var body: some View {
+        ScrollViewReader { proxy in
         Form {
             Section {
                 TextField("Name", text: $action.name)
@@ -201,10 +208,23 @@ struct ActionDetailView: View {
                     Text(testError).foregroundStyle(.red).textSelection(.enabled)
                 } else if !output.value.isEmpty {
                     Text(output.value).textSelection(.enabled).frame(maxWidth: .infinity, alignment: .leading)
+                        .id("tryItResult")
                 }
             }
         }
         .formStyle(.grouped)
+        .onChange(of: output.value) {
+            // Screenshot mode: bring the real result into view.
+            if ScreenshotMode.isOn && !output.value.isEmpty { proxy.scrollTo("tryItResult", anchor: .bottom) }
+        }
+        .onAppear {
+            guard ScreenshotMode.isOn,
+                  let index = state.actions.firstIndex(where: { $0.id == action.id }),
+                  let sample = ScreenshotMode.samples[index] else { return }
+            self.sample.value = sample
+            runTest()
+        }
+        }
     }
 
     private func warning(_ text: String) -> some View {

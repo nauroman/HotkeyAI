@@ -20,7 +20,7 @@ struct ProvidersView: View {
                           systemImage: AppleProvider.isAvailable ? "checkmark.circle.fill" : "xmark.circle")
                         .foregroundStyle(AppleProvider.isAvailable ? .green : .secondary)
                 }
-                let unsupported = AppleProvider.unsupportedPreferredLanguages
+                let unsupported = ScreenshotMode.isOn ? [] : AppleProvider.unsupportedPreferredLanguages
                 if !unsupported.isEmpty {
                     Label("Not officially supported yet: \(unsupported.joined(separator: ", ")). It usually works, but results can be weaker; pick ChatGPT or another provider for actions where that matters.",
                           systemImage: "exclamationmark.triangle")
@@ -85,7 +85,7 @@ private struct ChatGPTSection: View {
                 }
             case .signedIn:
                 HStack {
-                    Text(auth.email ?? "Signed in")
+                    Text(ScreenshotMode.isOn ? "Signed in" : (auth.email ?? "Signed in"))
                     Button("Sign out") { Task { await auth.signOut() } }
                 }
             }
@@ -141,7 +141,7 @@ private struct APIKeySection: View {
             ModelField(kind: kind, model: modelBinding, placeholder: "Default: \(kind.builtInModel)", label: "Default model")
         }
         if let url = kind.keyPageURL {
-            Link("Get a \(kind.shortName) API key", destination: url).font(.callout)
+            Link("Get your \(kind.shortName) API key", destination: url).font(.callout)
         }
     }
 

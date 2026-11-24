@@ -3,3 +3,7 @@ build/
 xcuserdata/
 *.xcarchive
 .DS_Store
+
+# Windows port build output (windows/ is managed by its own session)
+windows/**/bin/
+windows/**/obj/
