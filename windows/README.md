@@ -62,6 +62,6 @@ Mac: `windows/packaging/make-assets.sh`.
 
 ## Microsoft Store
 
-See [store/SUBMISSION.md](store/SUBMISSION.md): reserve the name, run the workflow with the
-Partner Center identity (or `Build-Msix.ps1` on Windows), upload the `.msixbundle`, paste the
-listing and certification notes.
+The product is reserved in Partner Center (Rotorlash Labs, Store ID 9P6DQ3CCTWFX). Every CI run
+builds the Store package as the **HotkeyAI-Store** artifact. [store/SUBMISSION.md](store/SUBMISSION.md)
+has the identity, the listing texts and the certification notes.

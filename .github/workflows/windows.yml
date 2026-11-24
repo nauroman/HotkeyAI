@@ -7,16 +7,6 @@ on:
   pull_request:
     paths: ['windows/**', 'Sources/HotkeyAI/DefaultPrompts.swift', 'Sources/HotkeyAI/IconArt.swift', '.github/workflows/windows.yml']
   workflow_dispatch:
-    inputs:
-      identity_name:
-        description: 'Store build: Package/Identity/Name from Partner Center (leave empty for a CI test build)'
-        required: false
-      publisher:
-        description: 'Store build: Package/Identity/Publisher (CN=…)'
-        required: false
-      publisher_display_name:
-        description: 'Store build: Publisher display name'
-        required: false
 
 permissions:
   contents: read
@@ -26,7 +16,7 @@ jobs:
     runs-on: windows-2022
     timeout-minutes: 45
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
         with:
           dotnet-version: '10.0.x'
@@ -34,19 +24,9 @@ jobs:
       - name: Unit tests
         run: dotnet test windows/tests/HotkeyAI.Core.Tests -c Release
 
-      - name: Build MSIX packages (x64, arm64) and bundle
+      - name: Build test MSIX packages (x64, arm64) and bundle
         shell: pwsh
-        env:
-          IDENTITY_NAME: ${{ inputs.identity_name }}
-          PUBLISHER: ${{ inputs.publisher }}
-          PUBLISHER_DISPLAY_NAME: ${{ inputs.publisher_display_name }}
-        run: |
-          $identity = @{}
-          if ($env:IDENTITY_NAME) {
-            if (!$env:PUBLISHER -or !$env:PUBLISHER_DISPLAY_NAME) { throw 'A Store build needs all three Partner Center values.' }
-            $identity = @{ IdentityName = $env:IDENTITY_NAME; Publisher = $env:PUBLISHER; PublisherDisplayName = $env:PUBLISHER_DISPLAY_NAME }
-          }
-          ./windows/packaging/Build-Msix.ps1 @identity -OutputDirectory dist/msix
+        run: ./windows/packaging/Build-Msix.ps1 -OutputDirectory dist/msix
 
       - name: Self-test (hotkeys, clipboard, DPAPI, windows, screenshots)
         shell: pwsh
@@ -61,12 +41,27 @@ jobs:
         run: dotnet run --project windows/tests/HotkeyAI.EndToEnd -c Release -- build/msix-work/x64/HotkeyAI.exe
 
       - name: Install the package, launch it from Start, uninstall
-        if: inputs.identity_name == ''
         # Windows PowerShell: the Appx cmdlets are unreliable in PowerShell 7 on Server 2022.
         shell: powershell
         run: ./windows/packaging/Test-Msix.ps1 -Package (Get-Item dist/msix/HotkeyAI_*_x64.msix).FullName
 
-      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+      # Same code with the Partner Center identity (windows/packaging/StoreIdentity.json), unsigned:
+      # the HotkeyAI-Store artifact's .msixbundle is what gets uploaded to Partner Center.
+      - name: Build the Microsoft Store package
+        shell: pwsh
+        run: ./windows/packaging/Build-Msix.ps1 -Store -OutputDirectory dist/store
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: HotkeyAI-Windows
-          path: dist/
+          name: HotkeyAI-Store
+          path: |
+            dist/store/*.msixbundle
+            dist/store/build.json
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: HotkeyAI-tests
+          path: |
+            dist/self-test/
+            dist/msix/build.json

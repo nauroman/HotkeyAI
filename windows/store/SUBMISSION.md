@@ -3,28 +3,28 @@
 Everything to paste into Partner Center. Publisher account: the one that already
 publishes ReasonKey and Arrow Keys. Field lengths are checked by `windows/store/check-listing.py`.
 
-## 1. Reserve the name and read the identity
+## 1. Product (reserved 2026-11-23)
 
-Partner Center → Apps and games → New product → MSIX or PWA app → reserve **HotkeyAI**.
-Then Product management → **Product identity** and copy:
-
-| Partner Center field | Build-Msix.ps1 parameter / workflow input |
+| Partner Center | Value |
 | --- | --- |
-| Package/Identity/Name | `-IdentityName` / `identity_name` |
-| Package/Identity/Publisher (`CN=…`) | `-Publisher` / `publisher` |
-| Package/Properties/PublisherDisplayName | `-PublisherDisplayName` / `publisher_display_name` |
+| Product name | HotkeyAI |
+| Store ID | 9P6DQ3CCTWFX — https://apps.microsoft.com/detail/9P6DQ3CCTWFX |
+| Package/Identity/Name | RotorlashLabs.HotkeyAI |
+| Package/Identity/Publisher | CN=0EB9C82F-5B55-416E-AF5F-023ED1301555 |
+| Package/Properties/PublisherDisplayName | Rotorlash Labs |
+| Package family name | RotorlashLabs.HotkeyAI_5mfc7h91dnj4r |
 
-## 2. Build the package
+These values are in `windows/packaging/StoreIdentity.json` (they are public: every installed
+package carries them). The name must be submitted within three months of the reservation.
 
-Either run the **Windows** workflow on GitHub (Actions → Windows → Run workflow) with the three
-values, and download the `HotkeyAI-Windows` artifact, or on a Windows PC:
+## 2. The package
 
-```powershell
-.\windows\packaging\Build-Msix.ps1 -IdentityName '<Name>' -Publisher '<CN=…>' -PublisherDisplayName '<display name>'
-```
-
-Upload `HotkeyAI_1.0.0.0.msixbundle` (x64 + arm64). It is unsigned on purpose: the Store signs it.
-`build.json` next to it records the identity, version and SHA-256 of every file.
+Every run of the **Windows** workflow builds `HotkeyAI_<version>.msixbundle` (x64 + arm64)
+with this identity and uploads it as the **HotkeyAI-Store** artifact, after the tests pass.
+On a Windows PC: `.\windows\packaging\Build-Msix.ps1 -Store -OutputDirectory build\store`.
+Upload the `.msixbundle` in Partner Center → Packages. It is unsigned on purpose: the Store
+signs it. `build.json` next to it records the identity, version and SHA-256 of every file.
+For an update, raise `<Version>` in `windows/Directory.Build.props` first.
 
 ## 3. Pricing and availability
 

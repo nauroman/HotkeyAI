@@ -4,16 +4,16 @@
 
 .DESCRIPTION
   Needs Windows with the .NET 10 SDK and the Windows 10/11 SDK (MakeAppx, MakePri).
-  For a Store submission pass the three values from Partner Center > Product management >
-  Product identity. The packages are unsigned: Microsoft signs them after certification.
-  Without the Store values the script builds a test package with a CI identity.
+  -Store uses the Partner Center identity in StoreIdentity.json (Product management >
+  Product identity). Store packages are unsigned: Microsoft signs them after certification.
+  Without -Store the script builds a test package with a CI identity.
 
 .EXAMPLE
-  .\windows\packaging\Build-Msix.ps1 -IdentityName 'RotorlashLabs.HotkeyAI' `
-    -Publisher 'CN=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX' -PublisherDisplayName 'Rotorlash Labs'
+  .\windows\packaging\Build-Msix.ps1 -Store -OutputDirectory build\store
 #>
 [CmdletBinding()]
 param(
+    [switch]$Store,
     [string]$IdentityName = 'HotkeyAI.CI',
     [string]$Publisher = 'CN=HotkeyAI.CI',
     [string]$PublisherDisplayName = 'HotkeyAI CI',
@@ -23,6 +23,12 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+if ($Store) {
+    $identity = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'StoreIdentity.json') -Raw | ConvertFrom-Json
+    $IdentityName = $identity.IdentityName
+    $Publisher = $identity.Publisher
+    $PublisherDisplayName = $identity.PublisherDisplayName
+}
 $windows = Split-Path $PSScriptRoot -Parent
 $root = Split-Path $windows -Parent
 if (!$OutputDirectory) { $OutputDirectory = Join-Path $root 'build\msix' }
