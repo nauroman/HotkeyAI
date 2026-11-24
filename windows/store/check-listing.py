@@ -22,7 +22,6 @@ def check(label, value, limit):
 
 check("Short description", field("Short description"), 270)
 check("Description", field("Description"), 10000)
-check("What's new", field("What's new in this version"), 1500)
 features = [line[2:] for line in (field("Product features") or "").splitlines() if line.startswith("- ")]
 check("Product features (count)", "x" * len(features), 20)
 for f in features:

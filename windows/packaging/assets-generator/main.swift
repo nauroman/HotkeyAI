@@ -72,4 +72,36 @@ for t in [16, 20, 24, 30, 32, 36, 40, 48, 60, 64, 72, 80, 96, 256] {
 // Partner Center listing images.
 try png(width: 300, height: 300, iconSize: 300).write(to: storeDir.appendingPathComponent("StoreLogo-300x300.png"))
 try png(width: 1080, height: 1080, iconSize: 1080).write(to: storeDir.appendingPathComponent("BoxArt-1080x1080.png"))
+
+// 9:16 poster art (the main Store logo on Windows 10/11): the icon and the name on the icon's gradient.
+func poster(width W: Int, height H: Int) -> Data {
+    let ctx = CGContext(data: nil, width: W, height: H, bitsPerComponent: 8, bytesPerRow: 0,
+                        space: CGColorSpace(name: CGColorSpace.sRGB)!,
+                        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)!
+    func c(_ hex: UInt32) -> CGColor {
+        CGColor(srgbRed: CGFloat((hex >> 16) & 0xFF) / 255, green: CGFloat((hex >> 8) & 0xFF) / 255,
+                blue: CGFloat(hex & 0xFF) / 255, alpha: 1)
+    }
+    let gradient = CGGradient(colorsSpace: CGColorSpace(name: CGColorSpace.sRGB),
+                              colors: [c(0x8F6BFF), c(0x5B3DF0), c(0x2F2AB8)] as CFArray, locations: [0, 0.55, 1])!
+    ctx.drawLinearGradient(gradient, start: CGPoint(x: 0, y: H), end: CGPoint(x: W, y: 0), options: [])
+    let icon = CGFloat(W) * 0.62
+    ctx.saveGState()
+    ctx.translateBy(x: (CGFloat(W) - icon) / 2, y: CGFloat(H) * 0.42)
+    drawWindowsIcon(ctx, size: icon)
+    ctx.restoreGState()
+    NSGraphicsContext.current = NSGraphicsContext(cgContext: ctx, flipped: false)
+    let style = NSMutableParagraphStyle()
+    style.alignment = .center
+    ("HotkeyAI" as NSString).draw(in: CGRect(x: 0, y: CGFloat(H) * 0.25, width: CGFloat(W), height: CGFloat(W) * 0.2),
+        withAttributes: [.font: NSFont.systemFont(ofSize: CGFloat(W) * 0.14, weight: .bold),
+                         .foregroundColor: NSColor.white, .paragraphStyle: style])
+    ("Rewrite text with one shortcut" as NSString).draw(
+        in: CGRect(x: 0, y: CGFloat(H) * 0.19, width: CGFloat(W), height: CGFloat(W) * 0.1),
+        withAttributes: [.font: NSFont.systemFont(ofSize: CGFloat(W) * 0.055, weight: .medium),
+                         .foregroundColor: NSColor(white: 1, alpha: 0.85), .paragraphStyle: style])
+    NSGraphicsContext.current = nil
+    return NSBitmapImageRep(cgImage: ctx.makeImage()!).representation(using: .png, properties: [:])!
+}
+try poster(width: 1440, height: 2160).write(to: storeDir.appendingPathComponent("PosterArt-1440x2160.png"))
 print("Wrote \(icoPath.path), \(msixDir.path) and \(storeDir.path)")

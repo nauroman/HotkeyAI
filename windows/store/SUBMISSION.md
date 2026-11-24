@@ -86,7 +86,7 @@ HotkeyAI presses Ctrl+A, Ctrl+C and Ctrl+V for you, only in the field you are ty
 An AI provider is required: a ChatGPT Plus or Pro plan, or an API key from OpenAI, Anthropic or Google (Google AI Studio offers free keys with a daily limit). HotkeyAI is open source: github.com/nauroman/HotkeyAI
 
 **What's new in this version**
-First release for Windows.
+(empty for the first release, as Partner Center suggests)
 
 **Product features** (≤ 20, each ≤ 200)
 - Win+Alt+E turns your draft into clear, natural English, translating from any language
@@ -110,24 +110,22 @@ MIT License — https://github.com/nauroman/HotkeyAI/blob/main/LICENSE
 **Developed by**
 nauroman
 
-**Screenshots** (desktop, PNG, 1366×768 or larger; up to 10)
-1. A text box before/after Win+Alt+E with the "Done" banner.
-2. Settings → Actions (`dist/self-test/settings-actions.png` from the CI artifact shows the real window).
-3. Settings → AI Providers.
-Each image needs a short caption, e.g. "Press Win+Alt+E in any text field", "Your own shortcuts and prompts", "ChatGPT, OpenAI, Claude or Gemini".
+**Screenshots** (desktop, PNG, 1920×1080): `windows/store/screenshots/1-welcome.png`,
+`2-actions.png`, `3-providers.png`. They frame the real windows captured on Windows by the CI
+self-test (HotkeyAI-tests artifact); rebuild them with `windows/store/make-screenshots.sh`.
 
 **Store logos**
-1:1 box art: `windows/store/images/BoxArt-1080x1080.png`; 1:1 app icon 300×300: `windows/store/images/StoreLogo-300x300.png`.
+9:16 poster art: `windows/store/images/PosterArt-1440x2160.png`; 1:1 box art:
+`windows/store/images/BoxArt-1080x1080.png` (both from `windows/packaging/make-assets.sh`).
 
-## 8. Submission options → Notes for certification
+## 8. Notes for certification (Additional Testing Information)
 
 ```
 HotkeyAI is an open-source, full-trust Win32 tray utility (WPF, .NET 10) packaged as MSIX. It rewrites the text in the focused text field when the user presses one of their own global shortcuts.
 
 How to test:
 1. Launch HotkeyAI from Start. A welcome window explains the shortcuts. The "Open HotkeyAI when I sign in to Windows" box is unticked by default; the startup task is only enabled if the user ticks it (or turns it on in Settings → General).
-2. HotkeyAI needs an AI provider. In Settings → AI Providers, paste this Google Gemini test key under "Google Gemini" and press Save: <TEST KEY>
-   (Alternatively "Sign in with ChatGPT" works with any ChatGPT Plus or Pro account.)
+2. HotkeyAI needs an AI provider. Use the Google Gemini test API key from the Credentials section of this page: in Settings > AI Providers, paste it under "Google Gemini", press Save, then set "Default provider" at the top of that page to "Gemini (Google API key)". ("Sign in with ChatGPT" also works with any ChatGPT Plus or Pro account.)
 3. In Settings → Actions, choose "Improve in English" and press "Run on this text" in the Try it box. The Russian sample is translated into English.
 4. Open Notepad, type "we has two ideas and i thinks they is good", and press Win+Alt+E. The text is replaced with corrected English and a banner above the taskbar says "Done". Win+Alt+Shift+E corrects text in its own language.
 5. The keycap icon in the notification area (it may be under ^) opens Settings with a left click; a right click shows the actions and Quit.
@@ -139,9 +137,9 @@ Network: HTTPS requests go only to the AI provider the user configured (api.open
 Source code and privacy policy: https://github.com/nauroman/HotkeyAI and https://nauroman.github.io/HotkeyAI/privacy.html
 ```
 
-Replace `<TEST KEY>` with a dedicated key (e.g. a free Google AI Studio key created only for
-certification) or remove step 2's first sentence if you prefer not to share one; without any
-key the reviewers can only test the UI, which risks a "can't verify functionality" rejection.
+These notes go to Partner Center → Supplemental info → **Additional Testing Information**
+(Description). The test key itself goes in **Credentials** on the same page, never in the text:
+a free Google AI Studio key created only for certification, revoked after publication.
 
 ## 9. After certification
 
