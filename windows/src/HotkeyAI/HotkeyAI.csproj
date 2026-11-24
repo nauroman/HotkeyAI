@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <!-- The Windows 10 SDK projection gives access to StartupTask and the package identity. -->
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
+    <UseWPF>true</UseWPF>
+    <!-- Only for NotifyIcon (the tray icon) and System.Drawing. -->
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>HotkeyAI</AssemblyName>
+    <RootNamespace>HotkeyAI</RootNamespace>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\HotkeyAI.ico</ApplicationIcon>
+    <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
+    <!-- WPF0001: Application.ThemeMode (the Windows 11 look) is marked experimental.
+         WFO0003: WinForms prefers its own DPI API, but this is a WPF app: DPI awareness belongs in app.manifest. -->
+    <NoWarn>$(NoWarn);WPF0001;WFO0003</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HotkeyAI.Core\HotkeyAI.Core.csproj" />
+    <Resource Include="Assets\HotkeyAI.ico" />
+  </ItemGroup>
+</Project>

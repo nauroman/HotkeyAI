@@ -1,0 +1,15 @@
+<Project>
+  <PropertyGroup>
+    <!-- One place for the app version. The MSIX version is this plus ".0". -->
+    <Version>1.0.0</Version>
+    <Company>nauroman</Company>
+    <Product>HotkeyAI</Product>
+    <Copyright>Copyright © 2026 nauroman</Copyright>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- The Windows projects also build on macOS and Linux (CI, development on a Mac). -->
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+  </PropertyGroup>
+</Project>

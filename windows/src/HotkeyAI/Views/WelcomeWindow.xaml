@@ -1,0 +1,42 @@
+<Window x:Class="HotkeyAI.Views.WelcomeWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Welcome to HotkeyAI"
+        Icon="/Assets/HotkeyAI.ico"
+        Width="560" SizeToContent="Height" ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen">
+    <StackPanel Margin="28,24,28,24">
+        <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+            <Image Source="/Assets/HotkeyAI.ico" Width="48" Height="48" Margin="0,0,14,0" />
+            <TextBlock Text="Welcome to HotkeyAI" FontSize="24" FontWeight="SemiBold" VerticalAlignment="Center" />
+        </StackPanel>
+        <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
+            Rewrite the text you are typing, in any app, with one shortcut. In any text field press:
+        </TextBlock>
+        <Grid Margin="0,0,0,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Text="Win+Alt+E" FontWeight="SemiBold" Margin="0,0,0,6" />
+            <TextBlock Grid.Column="1" TextWrapping="Wrap" Margin="0,0,0,6"
+                       Text="improve your text in natural English (it translates other languages)" />
+            <TextBlock Grid.Row="1" Text="Win+Alt+Shift+E" FontWeight="SemiBold" />
+            <TextBlock Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" Text="correct it in the language you typed" />
+        </Grid>
+        <TextBlock TextWrapping="Wrap" Margin="0,0,0,10"
+                   Text="HotkeyAI lives in the notification area of the taskbar (the keycap icon; it may be under ^). You can change the shortcuts and prompts, and add your own, in Settings." />
+        <TextBlock TextWrapping="Wrap" Margin="0,0,0,16"
+                   Text="To start, connect an AI: sign in with your ChatGPT Plus or Pro account, or add an OpenAI, Claude or Gemini API key." />
+        <CheckBox x:Name="StartupBox" Content="Open HotkeyAI when I sign in to Windows" Margin="0,0,0,20" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Other providers…" Click="Other_Click" Margin="0,0,8,0" MinWidth="130" />
+            <Button Content="Sign in with ChatGPT…" Click="SignIn_Click" Style="{DynamicResource AccentButtonStyle}"
+                    IsDefault="True" MinWidth="170" />
+        </StackPanel>
+    </StackPanel>
+</Window>

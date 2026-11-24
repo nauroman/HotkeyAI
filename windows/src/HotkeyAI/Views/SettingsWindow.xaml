@@ -1,0 +1,20 @@
+<Window x:Class="HotkeyAI.Views.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:v="clr-namespace:HotkeyAI.Views"
+        Title="HotkeyAI Settings"
+        Icon="/Assets/HotkeyAI.ico"
+        Width="940" Height="680" MinWidth="780" MinHeight="540"
+        WindowStartupLocation="CenterScreen">
+    <TabControl x:Name="Tabs" Margin="12,8,12,12">
+        <TabItem x:Name="ActionsTab" Header="Actions">
+            <v:ActionsPage x:Name="ActionsPage" />
+        </TabItem>
+        <TabItem x:Name="ProvidersTab" Header="AI Providers">
+            <v:ProvidersPage x:Name="ProvidersPage" />
+        </TabItem>
+        <TabItem x:Name="GeneralTab" Header="General">
+            <v:GeneralPage x:Name="GeneralPage" />
+        </TabItem>
+    </TabControl>
+</Window>
