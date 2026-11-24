@@ -27,7 +27,7 @@ final class KeyboardAccess {
         let center = NSWorkspace.shared.notificationCenter
         observers.append(center.addObserver(forName: NSWorkspace.didActivateApplicationNotification,
                                             object: nil, queue: .main) { _ in
-            MainActor.assumeIsolated { KeyboardAccess.shared.refresh() }
+            MainActor.assumeIsolated { _ = KeyboardAccess.shared.refresh() }
         })
         // When HotkeyAI's own window comes forward (e.g. back from System Settings), test for real.
         observers.append(NotificationCenter.default.addObserver(forName: NSApplication.didBecomeActiveNotification,
