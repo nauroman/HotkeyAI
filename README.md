@@ -46,6 +46,13 @@ closed-source or hosted app must apply through OpenAI's interest form. If you pu
 code (as with ChatGPTHotkey) you are on the self-serve path; confirm with OpenAI before
 shipping a closed-source App Store build.
 
+## Download
+
+Get `HotkeyAI-<version>.dmg` from [Releases](https://github.com/nauroman/HotkeyAI/releases/latest),
+open it and drag HotkeyAI to Applications (macOS 14 or later). The app is signed with
+Developer ID and notarized by Apple. `TEAM_ID=<your team ID> scripts/developer-id-release.sh`
+makes that disk image from the same archive as the App Store build.
+
 ## Build and run (no Xcode required)
 
 ```bash
