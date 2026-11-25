@@ -25,7 +25,10 @@
 </p>
 
 <p align="center">
-  <img src="docs/images/readme-demo.webp" width="720" alt="An email draft after the shortcut: “Hi team, we have two ideas for the launch and I think they are worth discussing tomorrow”, with HotkeyAI’s edits listed below: hi to Hi, has to have, i thinks to I think, is to are, tomorow to tomorrow">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/images/readme-demo-dark.webp">
+    <img src="docs/images/readme-demo-light.webp" width="720" alt="Animation: in an email draft, pressing Option Command E turns “hi team, we has two ideas for the launch and i thinks they is worth discussing tomorow” into “Hi team, we have two ideas for the launch and I think they are worth discussing tomorrow”, and HotkeyAI lists its edits. Then a Russian sentence becomes “I did not promise to finish by Friday.”, and Option Shift Command E fixes a Spanish sentence in Spanish.">
+  </picture>
 </p>
 
 ## What it does
@@ -74,6 +77,12 @@ Apple Intelligence isn't available on Windows. Keys and sign-in tokens stay on y
 Keychain on a Mac, encrypted for your account on Windows.
 
 ## Install
+
+<p>
+  <a href="https://apps.microsoft.com/detail/9P6DQ3CCTWFX"><img alt="Get it from Microsoft Store" src="https://img.shields.io/badge/Get_it_from-Microsoft_Store-24232c?style=for-the-badge&labelColor=24232c"></a>
+  <img alt="Mac App Store: coming soon" src="https://img.shields.io/badge/Mac_App_Store-coming_soon-8f8d9e?style=for-the-badge&labelColor=8f8d9e">
+  <a href="https://github.com/nauroman/HotkeyAI/releases/download/v1.0/HotkeyAI-1.0.dmg"><img alt="Download for Mac: signed DMG" src="https://img.shields.io/badge/Download_for_Mac-signed_DMG-5b3df0?style=for-the-badge&labelColor=24232c"></a>
+</p>
 
 HotkeyAI is installed from the stores.
 
