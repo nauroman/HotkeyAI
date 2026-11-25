@@ -137,6 +137,10 @@ Resources/               Info.plist, entitlements, privacy manifest, icon
   use "Whole field" or "Selected text only" rather than "Selection, or whole field".
 - UI is English only for now.
 
+## Support HotkeyAI
+
+HotkeyAI is free. If it saves you time, you can [leave a tip on Ko-fi](https://ko-fi.com/nauroman). It pays for the Apple developer membership and for time to keep HotkeyAI updated.
+
 ## License
 
 MIT, see [LICENSE](LICENSE).
