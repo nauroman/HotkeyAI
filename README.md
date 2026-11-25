@@ -1,163 +1,179 @@
-# HotkeyAI for macOS
+<p align="center">
+  <img src="docs/icon.webp" width="112" height="112" alt="HotkeyAI icon">
+</p>
 
-**Website: [nauroman.github.io/HotkeyAI](https://nauroman.github.io/HotkeyAI/)**, with downloads for Mac and Windows, setup and help.
+<h1 align="center">HotkeyAI</h1>
 
-A menu bar app that rewrites the text you are typing, in any app, with one shortcut.
-It is the macOS successor of [ChatGPTHotkey](https://github.com/nauroman/ChatGPTHotkey):
-the same two prompts (translate into polished English, edit in the original language),
-plus your own shortcuts and prompts, several AI providers and "Sign in with ChatGPT".
+<p align="center">
+  <b>Your draft, fixed in place.</b><br>
+  Write in any app and press one shortcut. HotkeyAI rewrites the text in the field you are typing in:
+  clear, natural English, or your own language without the mistakes. Free for Mac and Windows.
+</p>
 
-**Windows:** the same app for Windows 10 and 11 (notification-area icon, Win+Alt+E) is in
-[windows/](windows/README.md), packaged for the Microsoft Store.
+<p align="center">
+  <a href="https://apps.microsoft.com/detail/9P6DQ3CCTWFX"><img alt="Get it from Microsoft Store" src="https://img.shields.io/badge/Get_it_from-Microsoft_Store-24232c?style=for-the-badge&labelColor=24232c"></a>
+  <img alt="Mac App Store: coming soon" src="https://img.shields.io/badge/Mac_App_Store-coming_soon-8f8d9e?style=for-the-badge&labelColor=8f8d9e">
+  <a href="https://github.com/nauroman/HotkeyAI/releases/download/v1.0/HotkeyAI-1.0.dmg"><img alt="Download for Mac: signed DMG" src="https://img.shields.io/badge/Download_for_Mac-signed_DMG-5b3df0?style=for-the-badge&labelColor=24232c"></a>
+</p>
+
+<p align="center">
+  <a href="https://nauroman.github.io/HotkeyAI/"><b>Website</b></a>
+  &nbsp;&nbsp;
+  <a href="https://nauroman.github.io/HotkeyAI/privacy.html">Privacy</a>
+  &nbsp;&nbsp;
+  <a href="https://ko-fi.com/nauroman">Support on Ko-fi</a>
+</p>
+
+<p align="center">
+  <img src="docs/images/readme-demo.webp" width="720" alt="An email draft after the shortcut: “Hi team, we have two ideas for the launch and I think they are worth discussing tomorrow”, with HotkeyAI’s edits listed below: hi to Hi, has to have, i thinks to I think, is to are, tomorow to tomorrow">
+</p>
 
 ## What it does
 
-- Lives in the menu bar (no Dock icon) and can open automatically at login.
-- **Actions**: each action has a name, a global shortcut, a prompt, an AI provider/model
-  and what text it takes (whole field, selection, or selection-or-field). Add as many as you like.
-- Defaults, chosen for a MacBook keyboard (no F13; ⌥⌘ is one thumb press):
-  - **⌥⌘E** – improve the text in natural English, translating it if it is in another language
-    (the Windows tool's prompt, unchanged);
-  - **⌥⇧⌘E** – correct it in the language you typed, keeping your own wording and register;
-  - *Polish elegantly* – the Windows tool's literary rewrite, no shortcut by default.
-  ⌃⌥ + letter is avoided because Rectangle and Magnet use it for window layouts.
-- Press the shortcut in any text field → HotkeyAI copies the text (⌘A ⌘C), sends it to the AI,
-  pastes the result (⌘V) and restores your clipboard (all types, not just text).
-- If you switch apps while it is working, nothing is pasted; the result is left on the clipboard.
-- A small non-activating banner shows progress and errors. Errors never replace your text.
-- A **Try it** box in each action runs the prompt without touching other apps.
+You write an email, a chat message or a document. Before you send it, press one shortcut.
+HotkeyAI takes the text from the field you are typing in, has an AI rewrite it, and puts the better
+version back in the same place. You don't copy anything, switch apps or open a chat window.
 
-## AI providers
+- Works in any app: Mail, Messages, Outlook, Slack, Word, Google Docs, any browser.
+- Lives as a small keycap icon in the menu bar on a Mac, or in the notification area on Windows.
+- Puts your clipboard back after every rewrite.
+- You can add your own actions, each with its own shortcut and prompt: "make it shorter",
+  "make it polite", "turn this into bullet points".
 
-| Provider | How you connect | Notes |
-| --- | --- | --- |
-| **Apple Intelligence** (default) | Nothing | On-device model on macOS 26+. Free, offline, private; shorter texts. Russian isn't officially supported yet: it works, but results are weaker. |
-| **ChatGPT** | **Sign in with ChatGPT** (OAuth, no key) | Uses your ChatGPT **Plus/Pro** plan. You set HotkeyAI's weekly share at chatgpt.com/settings/usage. |
-| OpenAI API | API key | Billed separately on platform.openai.com. Default `gpt-5-nano`, minimal reasoning (same as the Windows tool). |
-| Claude | Anthropic API key | Anthropic forbids third-party apps from using Claude Pro/Max sign-in (Feb 2026), so a key is the only allowed way. Default `claude-opus-5-5`, low effort. |
-| Gemini | Google AI Studio key | Gemini OAuth needs every user to own a Google Cloud project, so a key is the practical option. Default `gemini-flash-latest`. |
+## Two shortcuts, ready on day one
 
-Keys and tokens are stored in the Keychain. Text goes only to the provider chosen for the action.
+### Improve in English: <kbd>⌥</kbd> <kbd>⌘</kbd> <kbd>E</kbd> on a Mac, <kbd>Win</kbd> <kbd>Alt</kbd> <kbd>E</kbd> on Windows
 
-### About "Sign in with ChatGPT"
+Fixes spelling, grammar and awkward phrasing. Write in any other language and it translates into
+natural, fluent English.
 
-The app implements OpenAI's documented public-client flow (<https://developers.openai.com/siwc>):
-dynamic registration (`client_id=dynamic_agent_client`), PKCE S256, a loopback redirect to
-`http://127.0.0.1:1455/auth/callback`, refresh-token rotation, revocation on sign-out, and
-inference through `POST /v1/responses` with `store:false, stream:true`.
+| You type | HotkeyAI writes |
+| --- | --- |
+| hi team, we has two ideas for the launch and i thinks they is worth discussing tomorow | Hi team, we have two ideas for the launch and I think they are worth discussing tomorrow |
+| я не обещал закончить к пятнице | I did not promise to finish by Friday. |
 
-OpenAI currently offers this self-serve to **open-source and locally run apps**. A paid,
-closed-source or hosted app must apply through OpenAI's interest form. If you publish this
-code (as with ChatGPTHotkey) you are on the self-serve path; confirm with OpenAI before
-shipping a closed-source App Store build.
+### Fix in original language: <kbd>⌥</kbd> <kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>E</kbd> on a Mac, <kbd>Win</kbd> <kbd>Alt</kbd> <kbd>Shift</kbd> <kbd>E</kbd> on Windows
 
-## Download
+Corrects mistakes in the language you typed, and keeps your own words and tone.
 
-HotkeyAI is installed through the stores only:
+| You type | HotkeyAI writes |
+| --- | --- |
+| mañana te envio el informe si todo sale bien | Mañana te envío el informe si todo sale bien. |
 
-- **Windows:** the [Microsoft Store](https://apps.microsoft.com/detail/9P6DQ3CCTWFX). There is no
-  standalone Windows installer, and none is planned.
-- **Mac:** the Mac App Store, once Apple approves HotkeyAI. Until then, get `HotkeyAI-<version>.dmg`
-  from [Releases](https://github.com/nauroman/HotkeyAI/releases/latest), open it and drag HotkeyAI to
-  Applications (macOS 14 or later). The app is signed with Developer ID and notarized by Apple.
-  `TEAM_ID=<your team ID> scripts/developer-id-release.sh` makes that disk image from the same archive
-  as the App Store build.
+## Your choice of AI
 
-When the Mac App Store version goes live, both apps are in their stores and the GitHub downloads go away:
+Pick one for everything, or a different one for each action. Your text goes only to the AI you picked.
 
-1. In `docs/index.html`, change `data-mas="soon"` to `data-mas="live"` (see the `MAC_APP_STORE`
-   comment at the top of the file).
-2. Remove the DMG from the website: the `mas-soon` download blocks and the Mac entry in
-   "Other ways to install".
-3. Remove the DMG instructions from this section of the README.
-4. New GitHub releases carry source and notes only: no installers attached or advertised.
-5. Deleting the installers already attached to past releases needs the owner's yes first.
+| AI | Where your text goes | Cost | You need |
+| --- | --- | --- | --- |
+| **Apple Intelligence** (default on a Mac) | Nowhere: it runs on your Mac and works offline | Free | A Mac with Apple silicon and macOS 26 or later. Best for shorter texts. |
+| **Sign in with ChatGPT** (default on Windows) | To OpenAI, under your ChatGPT account | Included in ChatGPT Plus or Pro | A ChatGPT Plus or Pro plan |
+| **Your own API key**: OpenAI, Claude or Gemini | To OpenAI, Anthropic or Google, under your key | Billed by the provider for each request | A key from that provider |
 
-## Build and run (no Xcode required)
+Apple Intelligence isn't available on Windows. Keys and sign-in tokens stay on your computer: in the
+Keychain on a Mac, encrypted for your account on Windows.
 
-```bash
-scripts/test.sh                 # 15 tests: parsing, prompts, icons, OAuth loopback listener
-scripts/build-app.sh            # → build/HotkeyAI.app (sandboxed, ad-hoc signed)
-open build/HotkeyAI.app
-```
+## Install
 
-Move the app to /Applications for "Open at Login" to be reliable.
+HotkeyAI is installed from the stores.
 
-macOS ties the Accessibility permission to the app's signature. Run
-`scripts/make-signing-cert.sh` once: it creates a self-signed "HotkeyAI Local Signing"
-certificate in your login keychain, and `build-app.sh` then signs every build with it, so the
-permission survives rebuilds. Without it the build is signed ad-hoc and must be re-approved
-after every rebuild. To use another certificate: `SIGN_IDENTITY="Apple Development: …" scripts/build-app.sh`.
+- **Windows 10 (version 2004 or later) and Windows 11:** the
+  [Microsoft Store](https://apps.microsoft.com/detail/9P6DQ3CCTWFX). It installs HotkeyAI and keeps it
+  up to date. This is the only Windows download. If your work computer blocks the Store, ask your IT
+  department to allow HotkeyAI (Store ID 9P6DQ3CCTWFX).
+- **macOS 14 or later:** Apple is reviewing HotkeyAI for the Mac App Store. Until it arrives, download
+  [HotkeyAI-1.0.dmg](https://github.com/nauroman/HotkeyAI/releases/download/v1.0/HotkeyAI-1.0.dmg),
+  open it and drag HotkeyAI to Applications. It is signed with Developer ID and notarized by Apple.
+  Once the Mac App Store version is live, it becomes the only way to install HotkeyAI on a Mac.
 
-### Permission
+## Set up in a minute
 
-To press ⌘A/⌘C/⌘V in other apps, macOS asks once for permission under
-**System Settings → Privacy & Security → Accessibility**. If it is missing, HotkeyAI opens
-that page itself (on first launch, from the menu's "Allow keyboard access…", or when a
-shortcut is pressed), waits for the switch and confirms. If the switch is on but access
-still isn't detected (typical after a rebuild), remove HotkeyAI with − and add it again. HotkeyAI only *posts* key events
-(the sandbox-compatible "post event" privilege); it does not read the screen or other apps.
+**On a Mac**
 
-## Mac App Store
+1. Open HotkeyAI. The keycap icon appears in the menu bar.
+2. HotkeyAI opens System Settings → Privacy & Security → Accessibility. Turn on HotkeyAI.
+3. Type something in Notes or Mail and press <kbd>⌥</kbd> <kbd>⌘</kbd> <kbd>E</kbd>.
+4. No Apple Intelligence? Sign in with ChatGPT or paste an API key in HotkeyAI → Settings → AI Providers.
 
-App Store Connect only accepts builds made with a release version of Xcode, so the store
-build uses `HotkeyAI.xcodeproj` (same sources; the SwiftPM build stays for quick local work).
+macOS lets an app press keys for you only with your permission. HotkeyAI uses it to press ⌘A, ⌘C and
+⌘V in the field you are typing in, and only when you press one of your shortcuts. It does not read
+your screen or record your typing.
 
-1. Install Xcode, open it once, and add your Apple ID in Xcode → Settings → Accounts.
-2. In App Store Connect create the app (bundle ID `com.nauroman.HotkeyAI`). All texts, URLs,
-   review notes and privacy answers are in [AppStore/SUBMISSION.md](AppStore/SUBMISSION.md).
-3. `TEAM_ID=<your team ID> scripts/appstore-upload.sh` archives, signs and uploads the build.
-   Bump `CFBundleVersion` in `Resources/Info.plist` before each new upload.
-4. Add screenshots, pick the build and submit for review.
+**On Windows**
 
-The support and privacy pages live in `docs/` and are served by GitHub Pages at
-<https://nauroman.github.io/HotkeyAI/>.
+1. Open HotkeyAI from Start. The keycap icon appears in the notification area of the taskbar (it may be under ^).
+2. Sign in with your ChatGPT Plus or Pro account, or add an OpenAI, Claude or Gemini API key.
+3. Type in any text field and press <kbd>Win</kbd> <kbd>Alt</kbd> <kbd>E</kbd>.
 
-Already in place: App Sandbox (`network.client`, `network.server` for the loopback sign-in),
-hardened runtime, `LSUIElement`, SMAppService login item that is only enabled with the user's
-consent (guideline 2.4.5(iii)), privacy manifest, 1024-px icon, weak-linked FoundationModels
-so macOS 14–15 are supported.
+Windows needs no extra permission.
 
-**Main review risk – guideline 2.4.5.** Apple's engineers confirm that posting key events is
-allowed in the sandbox, but App Review has rejected at least one clipboard app for using
-`CGEvent.post` to paste. Explain in the review notes that the user explicitly triggers each
-action with their own shortcut, and that the app only sends ⌘A/⌘C/⌘V to the focused field.
-If review still refuses, the same build can be distributed outside the store with a
-Developer ID signature and notarization, with no code changes.
+## Privacy
 
-## Icons
+Your text goes from your computer to the AI you chose, and nowhere else. HotkeyAI has no servers, no
+account with us, no analytics, no tracking and no ads, and it keeps no copy of your text or the results.
+Read the [privacy policy](https://nauroman.github.io/HotkeyAI/privacy.html).
 
-The app icon (a keycap with an AI sparkle) and the single-color menu bar glyph are drawn in
-code in `Sources/HotkeyAI/IconArt.swift`. The menu bar uses a template image, so macOS
-recolors it for light and dark menu bars; while an action runs, the sparkle turns into "•••".
-`scripts/make-icons.sh` re-renders `Resources/AppIcon.icns`, `Resources/AppIcon-1024.png`
-and `Resources/MenuBarIcon/` (PNG @1x–3x and PDF, for an Xcode asset catalog set to
-"Template Image"). A preview sheet is written to `build/icons/preview.png`.
+## Questions
 
-## Layout
+<details>
+<summary><b>Where is HotkeyAI after I open it?</b></summary>
+<br>
+It has no window. Look for the keycap icon in the menu bar on a Mac, or in the notification area of the
+taskbar on Windows. Click it for your actions and Settings.
+</details>
 
-```
-Sources/HotkeyAI/
-  HotkeyAIApp.swift      menu bar, app menu, first-run welcome
-  AppState.swift         settings, hotkey bindings, the capture → AI → paste pipeline
-  HotkeyManager.swift    Carbon RegisterEventHotKey (no permission needed, sandbox-safe)
-  TextBridge.swift       ⌘A/⌘C/⌘V posting, clipboard snapshot/restore
-  ShortcutRecorder.swift, KeyNames.swift, HUD.swift, Keychain.swift, LoginItem.swift
-  Providers/             ChatGPT sign-in + loopback server, OpenAI, Anthropic, Gemini, Apple
-  Views/                 Settings window: Actions, AI Providers, General
-Resources/               Info.plist, entitlements, privacy manifest, icon
-```
+<details>
+<summary><b>The switch is on, but HotkeyAI still asks for access</b></summary>
+<br>
+In Accessibility settings, select HotkeyAI and remove it with −. Then choose <b>Allow keyboard access…</b>
+in the HotkeyAI menu and turn it on again.
+</details>
 
-## Known limitations
+<details>
+<summary><b>Nothing changes in some Windows apps</b></summary>
+<br>
+Windows doesn't let other apps type into apps that run as administrator, so HotkeyAI can't change text there.
+</details>
 
-- Rich formatting is not preserved; the result is pasted as plain text.
-- In editors that copy the current line when nothing is selected (VS Code, JetBrains),
-  use "Whole field" or "Selected text only" rather than "Selection, or whole field".
-- UI is English only for now.
+<details>
+<summary><b>Is formatting kept?</b></summary>
+<br>
+No. The result is pasted as plain text. In code editors that copy the current line when nothing is
+selected (VS Code, JetBrains), set the action to "Whole field" or "Selected text only".
+</details>
+
+<details>
+<summary><b>Something doesn't work</b></summary>
+<br>
+<a href="https://github.com/nauroman/HotkeyAI/issues/new">Open an issue</a>. Say which computer you use
+and what the banner at the top of the screen (above the taskbar on Windows) said.
+</details>
 
 ## Support HotkeyAI
 
-HotkeyAI is free. If it saves you time, you can [leave a tip on Ko-fi](https://ko-fi.com/nauroman). It pays for the Apple developer membership and for time to keep HotkeyAI updated.
+HotkeyAI is free. If it saves you time, you can [leave a tip on Ko-fi](https://ko-fi.com/nauroman).
+It pays for the Apple developer membership and for time to keep HotkeyAI updated.
+
+## For developers
+
+<details>
+<summary><b>Build, test, release and project layout</b></summary>
+<br>
+
+- [DEVELOPMENT.md](DEVELOPMENT.md): the Mac app. Build and test without Xcode, signing, the App Store
+  build, icons, project layout, AI provider details and the store-only release rules.
+- [windows/README.md](windows/README.md): the Windows app (C#/WPF, MSIX for the Microsoft Store).
+- [AppStore/SUBMISSION.md](AppStore/SUBMISSION.md) and [windows/store/SUBMISSION.md](windows/store/SUBMISSION.md):
+  everything that goes into App Store Connect and Partner Center.
+
+```bash
+scripts/test.sh          # Mac unit tests
+scripts/build-app.sh     # → build/HotkeyAI.app
+```
+
+HotkeyAI is the successor of [ChatGPTHotkey](https://github.com/nauroman/ChatGPTHotkey) and uses the
+same two prompts.
+</details>
 
 ## License
 
