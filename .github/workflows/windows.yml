@@ -1,0 +1,67 @@
+name: Windows
+
+on:
+  push:
+    branches: [main]
+    paths: ['windows/**', 'Sources/HotkeyAI/DefaultPrompts.swift', 'Sources/HotkeyAI/IconArt.swift', '.github/workflows/windows.yml']
+  pull_request:
+    paths: ['windows/**', 'Sources/HotkeyAI/DefaultPrompts.swift', 'Sources/HotkeyAI/IconArt.swift', '.github/workflows/windows.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    runs-on: windows-2022
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Unit tests
+        run: dotnet test windows/tests/HotkeyAI.Core.Tests -c Release
+
+      - name: Build test MSIX packages (x64, arm64) and bundle
+        shell: pwsh
+        run: ./windows/packaging/Build-Msix.ps1 -OutputDirectory dist/msix
+
+      - name: Self-test (hotkeys, clipboard, DPAPI, windows, screenshots)
+        shell: pwsh
+        run: |
+          $env:HOTKEYAI_DATA_DIR = Join-Path $env:RUNNER_TEMP 'self-test-data'
+          $out = Join-Path $pwd 'dist/self-test'
+          $p = Start-Process build/msix-work/x64/HotkeyAI.exe -ArgumentList '--self-test', $out -PassThru -Wait
+          Get-Content (Join-Path $out 'self-test.json')
+          if ($p.ExitCode) { throw "Self-test failed with exit code $($p.ExitCode)" }
+
+      - name: End-to-end (press the shortcuts in a text box, check the result and the clipboard)
+        run: dotnet run --project windows/tests/HotkeyAI.EndToEnd -c Release -- build/msix-work/x64/HotkeyAI.exe
+
+      - name: Install the package, launch it from Start, uninstall
+        # Windows PowerShell: the Appx cmdlets are unreliable in PowerShell 7 on Server 2022.
+        shell: powershell
+        run: ./windows/packaging/Test-Msix.ps1 -Package (Get-Item dist/msix/HotkeyAI_*_x64.msix).FullName
+
+      # Same code with the Partner Center identity (windows/packaging/StoreIdentity.json), unsigned:
+      # the HotkeyAI-Store artifact's .msixbundle is what gets uploaded to Partner Center.
+      - name: Build the Microsoft Store package
+        shell: pwsh
+        run: ./windows/packaging/Build-Msix.ps1 -Store -OutputDirectory dist/store
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: HotkeyAI-Store
+          path: |
+            dist/store/*.msixbundle
+            dist/store/build.json
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: always()
+        with:
+          name: HotkeyAI-tests
+          path: |
+            dist/self-test/
+            dist/msix/build.json

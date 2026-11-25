@@ -7,6 +7,9 @@ It is the macOS successor of [ChatGPTHotkey](https://github.com/nauroman/ChatGPT
 the same two prompts (translate into polished English, edit in the original language),
 plus your own shortcuts and prompts, several AI providers and "Sign in with ChatGPT".
 
+**Windows:** the same app for Windows 10 and 11 (notification-area icon, Win+Alt+E) is in
+[windows/](windows/README.md), packaged for the Microsoft Store.
+
 ## What it does
 
 - Lives in the menu bar (no Dock icon) and can open automatically at login.

@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/HotkeyAI.Core/HotkeyAI.Core.csproj" />
+    <Project Path="src/HotkeyAI/HotkeyAI.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/HotkeyAI.Core.Tests/HotkeyAI.Core.Tests.csproj" />
+    <Project Path="tests/HotkeyAI.EndToEnd/HotkeyAI.EndToEnd.csproj" />
+  </Folder>
+</Solution>

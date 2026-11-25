@@ -1,0 +1,182 @@
+<UserControl x:Class="HotkeyAI.Views.ActionsPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:v="clr-namespace:HotkeyAI.Views">
+    <Grid Margin="0,12,0,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="290" MinWidth="220" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" MinWidth="420" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Action list -->
+        <DockPanel Grid.Column="0">
+            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" Margin="0,8,0,0">
+                <Button x:Name="AddButton" ToolTip="Add an action" Click="Add_Click" Padding="10,5">
+                    <TextBlock Text="&#xE710;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" />
+                </Button>
+                <Button x:Name="RemoveButton" ToolTip="Delete the selected action" Click="Remove_Click" Margin="4,0,0,0" Padding="10,5">
+                    <TextBlock Text="&#xE738;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" />
+                </Button>
+                <Button ToolTip="Move up" Click="MoveUp_Click" Margin="12,0,0,0" Padding="10,5">
+                    <TextBlock Text="&#xE74A;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" />
+                </Button>
+                <Button ToolTip="Move down" Click="MoveDown_Click" Margin="4,0,0,0" Padding="10,5">
+                    <TextBlock Text="&#xE74B;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" />
+                </Button>
+                <Button x:Name="MoreButton" ToolTip="More" Click="More_Click" Margin="12,0,0,0" Padding="10,5">
+                    <TextBlock Text="&#xE712;" FontFamily="Segoe Fluent Icons, Segoe MDL2 Assets" />
+                    <Button.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Duplicate" Click="Duplicate_Click" />
+                            <Separator />
+                            <MenuItem Header="Add built-in actions again" Click="RestoreDefaults_Click" />
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+            </StackPanel>
+            <ListBox x:Name="List" SelectionChanged="List_SelectionChanged"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Opacity="{Binding Enabled, Converter={StaticResource EnabledOpacity}}" Margin="0,2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <CheckBox IsChecked="{Binding Enabled}" VerticalAlignment="Center" MinWidth="0"
+                                      ToolTip="Turn this action on or off" />
+                            <StackPanel Grid.Column="1" Margin="4,0,8,0" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" />
+                                <TextBlock FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}">
+                                    <TextBlock.Text>
+                                        <MultiBinding Converter="{StaticResource ProviderShortName}">
+                                            <Binding Path="ProviderId" />
+                                            <Binding Path="DataContext.DefaultProvider"
+                                                     RelativeSource="{RelativeSource AncestorType=ListBox}" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </StackPanel>
+                            <TextBlock Grid.Column="2" VerticalAlignment="Center" FontSize="12"
+                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                       Text="{Binding Shortcut, Converter={StaticResource ShortcutText}}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </DockPanel>
+
+        <GridSplitter Grid.Column="1" Width="12" HorizontalAlignment="Center" Background="Transparent" />
+
+        <!-- Detail -->
+        <TextBlock x:Name="EmptyHint" Grid.Column="2" Text="Select an action, or press + to create one."
+                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+        <ScrollViewer x:Name="Detail" Grid.Column="2" VerticalScrollBarVisibility="Auto" Visibility="Collapsed">
+            <StackPanel Margin="0,0,12,12">
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <Grid Style="{StaticResource Row}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Name" Style="{StaticResource Label}" />
+                            <TextBox Grid.Column="1" Text="{Binding Action.Name, UpdateSourceTrigger=PropertyChanged}" />
+                        </Grid>
+                        <Grid Style="{StaticResource Row}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Shortcut" Style="{StaticResource Label}" />
+                            <StackPanel Grid.Column="1">
+                                <v:ShortcutRecorder x:Name="Recorder" Combo="{Binding Action.Shortcut}" />
+                                <TextBlock Text="{Binding FailedWarning}" Style="{StaticResource Warning}"
+                                           Visibility="{Binding FailedWarning, Converter={StaticResource Present}}" />
+                                <TextBlock Text="{Binding ConflictWarning}" Style="{StaticResource Warning}"
+                                           Visibility="{Binding ConflictWarning, Converter={StaticResource Present}}" />
+                            </StackPanel>
+                        </Grid>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Text to process" Style="{StaticResource Label}" />
+                            <ComboBox Grid.Column="1" ItemsSource="{Binding CaptureChoices}" DisplayMemberPath="Title"
+                                      SelectedValuePath="Value" SelectedValue="{Binding Action.CaptureMode}" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="AI" Style="{StaticResource SectionTitle}" />
+                        <Grid Style="{StaticResource Row}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Provider" Style="{StaticResource Label}" />
+                            <ComboBox Grid.Column="1" ItemsSource="{Binding ProviderChoices}" DisplayMemberPath="Title"
+                                      SelectedValuePath="Value" SelectedValue="{Binding ProviderChoice}" />
+                        </Grid>
+                        <Grid Style="{StaticResource Row}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Model" Style="{StaticResource Label}" VerticalAlignment="Top" Margin="0,6,12,0" />
+                            <v:ModelPicker Grid.Column="1" Text="{Binding Action.Model}" Provider="{Binding Provider}"
+                                           Hint="{Binding ModelHint}" />
+                        </Grid>
+                        <Grid Visibility="{Binding ShowEffort, Converter={StaticResource Visible}}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="140" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Reasoning effort" Style="{StaticResource Label}" />
+                            <ComboBox Grid.Column="1" ItemsSource="{Binding EffortChoices}" DisplayMemberPath="Title"
+                                      SelectedValuePath="Value" SelectedValue="{Binding Action.ReasoningEffort}" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="Prompt" Style="{StaticResource SectionTitle}" />
+                        <TextBox Text="{Binding Action.Prompt, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True"
+                                 TextWrapping="Wrap" MinHeight="180" MaxHeight="360" VerticalScrollBarVisibility="Auto"
+                                 VerticalContentAlignment="Top" />
+                        <CheckBox Margin="0,10,0,0" IsChecked="{Binding Action.StrictTransform}"
+                                  Content="Treat the captured text only as material to transform" />
+                        <TextBlock Style="{StaticResource Caption}"
+                                   Text="Questions or commands inside your text are translated or edited, never answered or obeyed. Turn off for prompts like “Answer this” or “Reply to this email”."
+                                   Visibility="{Binding Action.StrictTransform, Converter={StaticResource Visible}}" />
+                        <TextBlock Style="{StaticResource Caption}"
+                                   Text="The text is passed to the prompt as-is, so the AI may answer questions in it."
+                                   Visibility="{Binding Action.StrictTransform, Converter={StaticResource Hidden}}" />
+                    </StackPanel>
+                </Border>
+
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <TextBlock Text="Try it" Style="{StaticResource SectionTitle}" />
+                        <TextBox Text="{Binding Sample, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True"
+                                 TextWrapping="Wrap" MinHeight="60" VerticalContentAlignment="Top" />
+                        <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                            <Button Content="{Binding RunTitle}" Click="RunTest_Click" Style="{DynamicResource AccentButtonStyle}" />
+                        </StackPanel>
+                        <TextBlock Text="{Binding TestError}" Style="{StaticResource Error}"
+                                   Visibility="{Binding TestError, Converter={StaticResource Present}}" />
+                        <TextBox Text="{Binding Output, Mode=OneWay}" IsReadOnly="True" TextWrapping="Wrap" Margin="0,10,0,0"
+                                 Visibility="{Binding Output, Converter={StaticResource Present}}" />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Everything that doesn't need Windows: prompts, settings, AI providers and
+       "Sign in with ChatGPT". Builds and is tested on any OS. -->
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>HotkeyAI.Core</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="HotkeyAI.Core.Tests" />
+  </ItemGroup>
+</Project>
