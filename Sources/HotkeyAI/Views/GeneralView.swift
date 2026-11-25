@@ -97,6 +97,11 @@ struct GeneralView: View {
                 LabeledContent("Version", value: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "dev")
                 Text("Your text is sent only to the AI provider chosen for the action. API keys and sign-in tokens are stored in your Keychain.")
                     .font(.caption).foregroundStyle(.secondary)
+                HStack(spacing: 16) {
+                    ForEach(ProjectPage.aboutLinks) { link in
+                        Link(link.title, destination: link.url)
+                    }
+                }
             }
         }
         .formStyle(.grouped)

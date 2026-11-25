@@ -43,13 +43,8 @@
                     <TextBlock x:Name="VersionText" />
                     <TextBlock TextWrapping="Wrap" Margin="0,8,0,0"
                                Text="Your text is sent only to the AI provider chosen for the action. API keys and sign-in tokens are encrypted for your Windows account and stay on this PC. HotkeyAI has no servers, analytics or ads." />
-                    <TextBlock Margin="0,8,0,0">
-                        <Hyperlink Click="Privacy_Click">Privacy policy</Hyperlink>
-                        <Run Text="  ·  " />
-                        <Hyperlink Click="Source_Click">Source code</Hyperlink>
-                        <Run Text="  ·  " />
-                        <Hyperlink Click="Issues_Click">Report a problem</Hyperlink>
-                    </TextBlock>
+                    <!-- Filled from AppLinks.About: Website, Privacy policy, Source code, Report a problem. -->
+                    <TextBlock x:Name="LinksText" Margin="0,8,0,0" />
                 </StackPanel>
             </Border>
         </StackPanel>

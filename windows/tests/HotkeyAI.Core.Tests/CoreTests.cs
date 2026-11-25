@@ -131,6 +131,18 @@ public class ModelTests
     }
 }
 
+public class AppLinksTests
+{
+    [Fact]
+    public void AboutLinksStartWithTheWebsite()
+    {
+        Assert.Equal(new[] { "Website", "Privacy policy", "Source code", "Report a problem" }, AppLinks.About.Select(l => l.Title));
+        Assert.Equal(TrayMenu.ProjectPageUrl, AppLinks.About[0].Url);
+        Assert.Equal("https://nauroman.github.io/HotkeyAI/privacy.html", AppLinks.About[1].Url);
+        Assert.All(AppLinks.About, l => Assert.StartsWith("https://", l.Url));
+    }
+}
+
 public class TrayMenuTests
 {
     [Fact]

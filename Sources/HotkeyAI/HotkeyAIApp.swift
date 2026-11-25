@@ -57,6 +57,20 @@ enum ProjectPage {
     static let url = URL(string: "https://nauroman.github.io/HotkeyAI/")!
     static let menuTitle = "About HotkeyAI…"
 
+    struct Link: Identifiable {
+        let title: String
+        let url: URL
+        var id: String { title }
+    }
+
+    /// The links in Settings → General → About, in order.
+    static let aboutLinks: [Link] = [
+        Link(title: "Website", url: url),
+        Link(title: "Privacy policy", url: URL(string: "https://nauroman.github.io/HotkeyAI/privacy.html")!),
+        Link(title: "Source code", url: URL(string: "https://github.com/nauroman/HotkeyAI")!),
+        Link(title: "Report a problem", url: URL(string: "https://github.com/nauroman/HotkeyAI/issues")!),
+    ]
+
     @MainActor static func open() {
         NSWorkspace.shared.open(url)
     }

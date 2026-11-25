@@ -200,4 +200,10 @@ import AppKit
         let about = AppDelegate.makeAppMenu(target: nil).items.first { $0.title == ProjectPage.menuTitle }
         #expect(about?.action == NSSelectorFromString("openProjectPage"))
     }
+
+    @Test func aboutSectionLinksStartWithTheWebsite() {
+        #expect(ProjectPage.aboutLinks.map(\.title) == ["Website", "Privacy policy", "Source code", "Report a problem"])
+        #expect(ProjectPage.aboutLinks.first?.url == ProjectPage.url)
+        #expect(ProjectPage.aboutLinks[1].url.absoluteString == "https://nauroman.github.io/HotkeyAI/privacy.html")
+    }
 }
