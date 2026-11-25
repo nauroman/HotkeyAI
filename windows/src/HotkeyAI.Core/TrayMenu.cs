@@ -14,7 +14,7 @@ public static class TrayMenu
 
     /// HotkeyAI's website (docs/index.html, published with GitHub Pages): downloads, setup, help.
     /// "About HotkeyAI…", the last item before Quit, opens it in the default browser.
-    public const string ProjectPageUrl = "https://nauroman.github.io/HotkeyAI/";
+    public const string ProjectPageUrl = AppLinks.Website;
 
     /// `actions` are the enabled actions; choosing one returns `FirstAction + its index`.
     public static IReadOnlyList<TrayMenuItem> Build(IReadOnlyList<HotkeyAction> actions, string? runningActionName)

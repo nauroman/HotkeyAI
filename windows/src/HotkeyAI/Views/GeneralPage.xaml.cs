@@ -1,18 +1,22 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using HotkeyAI.Platform;
 
 namespace HotkeyAI.Views;
 
 public partial class GeneralPage : UserControl
 {
-    public const string PrivacyUrl = "https://nauroman.github.io/HotkeyAI/privacy.html";
-    public const string SourceUrl = "https://github.com/nauroman/HotkeyAI";
-    public const string IssuesUrl = "https://github.com/nauroman/HotkeyAI/issues";
-
     public GeneralPage()
     {
         InitializeComponent();
+        foreach (var (title, url) in AppLinks.About)
+        {
+            if (LinksText.Inlines.Count > 0) LinksText.Inlines.Add(new Run("  ·  "));
+            var link = new Hyperlink(new Run(title));
+            link.Click += (_, _) => WindowInfo.OpenUrl(url);
+            LinksText.Inlines.Add(link);
+        }
         IsVisibleChanged += async (_, _) =>
         {
             if (IsVisible) await RefreshStartupAsync();
@@ -66,7 +70,4 @@ public partial class GeneralPage : UserControl
     }
 
     private void OpenStartupSettings_Click(object sender, RoutedEventArgs e) => WindowInfo.OpenUrl("ms-settings:startupapps");
-    private void Privacy_Click(object sender, RoutedEventArgs e) => WindowInfo.OpenUrl(PrivacyUrl);
-    private void Source_Click(object sender, RoutedEventArgs e) => WindowInfo.OpenUrl(SourceUrl);
-    private void Issues_Click(object sender, RoutedEventArgs e) => WindowInfo.OpenUrl(IssuesUrl);
 }

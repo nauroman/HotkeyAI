@@ -1,6 +1,7 @@
 # Microsoft Store submission — HotkeyAI for Windows
 
-First release 1.0.0 (2026-11-24). Current update: **1.0.1**, see section 10.
+First release 1.0.0 (2026-11-24). Update 1.0.1 (section 10) went to certification on 2026-11-25.
+Next update: **1.0.2**, see section 11.
 
 Everything to paste into Partner Center. Publisher account: the one that already
 publishes ReasonKey and Arrow Keys. Field lengths are checked by `windows/store/check-listing.py`.
@@ -88,7 +89,7 @@ HotkeyAI presses Ctrl+A, Ctrl+C and Ctrl+V for you, only in the field you are ty
 An AI provider is required: a ChatGPT Plus or Pro plan, or an API key from OpenAI, Anthropic or Google (Google AI Studio offers free keys with a daily limit). HotkeyAI is open source: github.com/nauroman/HotkeyAI
 
 **What's new in this version**
-About HotkeyAI… in the notification-area menu opens the HotkeyAI website, with setup steps, answers to common questions and the privacy policy.
+Settings → General → About now links to the HotkeyAI website, next to the privacy policy, the source code and Report a problem.
 
 **Product features** (≤ 20, each ≤ 200)
 - Win+Alt+E turns your draft into clear, natural English, translating from any language
@@ -160,8 +161,20 @@ https://nauroman.github.io/HotkeyAI/ (pull request #3). Nothing else in the list
    version `1.0.1.0`, SHA-256 of every file).
 3. Partner Center → HotkeyAI → **Start update**. Only these pages change:
    - **Packages**: remove 1.0.0.0, upload `HotkeyAI_1.0.1.0.msixbundle` (about 150 MB, drag it in).
-   - **Store listings → English (United States) → What's new in this version**: the text in section 7.
+   - **Store listings → English (United States) → What's new in this version**: "About HotkeyAI… in the
+     notification-area menu opens the HotkeyAI website, with setup steps, answers to common questions
+     and the privacy policy."
    - **Submission options → Notes for certification**: section 8 as it is now (step 5 mentions
      About HotkeyAI…). Put a working test key in **Credentials** again if the first one was revoked.
 4. Choose when to publish (automatically after certification is the default), then
    **Submit to the Store**.
+
+## 11. Update 1.0.2
+
+What changed: Settings → General → About links to the website first, then the privacy policy, the
+source code and Report a problem (pull request "About links"). The links come from
+`HotkeyAI.Core/AppLinks.cs`, which the tray menu's About HotkeyAI… uses too.
+
+Wait until 1.0.1 has passed certification; Partner Center allows one submission in progress.
+Then repeat the steps of section 10 with `HotkeyAI_1.0.2.0.msixbundle` and the What's new text in
+section 7. The certification notes in section 8 stay the same.
