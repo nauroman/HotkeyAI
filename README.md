@@ -1,5 +1,7 @@
 # HotkeyAI for macOS
 
+**Website: [nauroman.github.io/HotkeyAI](https://nauroman.github.io/HotkeyAI/)**, with downloads for Mac and Windows, setup and help.
+
 A menu bar app that rewrites the text you are typing, in any app, with one shortcut.
 It is the macOS successor of [ChatGPTHotkey](https://github.com/nauroman/ChatGPTHotkey):
 the same two prompts (translate into polished English, edit in the original language),
