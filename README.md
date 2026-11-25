@@ -1,5 +1,7 @@
 # HotkeyAI for macOS
 
+**Website: [nauroman.github.io/HotkeyAI](https://nauroman.github.io/HotkeyAI/)**, with downloads for Mac and Windows, setup and help.
+
 A menu bar app that rewrites the text you are typing, in any app, with one shortcut.
 It is the macOS successor of [ChatGPTHotkey](https://github.com/nauroman/ChatGPTHotkey):
 the same two prompts (translate into polished English, edit in the original language),
@@ -134,6 +136,10 @@ Resources/               Info.plist, entitlements, privacy manifest, icon
 - In editors that copy the current line when nothing is selected (VS Code, JetBrains),
   use "Whole field" or "Selected text only" rather than "Selection, or whole field".
 - UI is English only for now.
+
+## Support HotkeyAI
+
+HotkeyAI is free. If it saves you time, you can [leave a tip on Ko-fi](https://ko-fi.com/nauroman). It pays for the Apple developer membership and for time to keep HotkeyAI updated.
 
 ## License
 

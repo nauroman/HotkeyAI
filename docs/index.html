@@ -3,45 +3,329 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>HotkeyAI — rewrite text with one shortcut</title>
-<link rel="icon" href="icon.png">
-<link rel="stylesheet" href="style.css">
+<title>HotkeyAI — rewrite what you type, in any app, with one shortcut</title>
+<meta name="description" content="Press one shortcut in any app and HotkeyAI turns your draft into clear, natural English, or fixes it in the language you typed. Free for Mac and Windows.">
+<meta property="og:title" content="HotkeyAI">
+<meta property="og:description" content="Rewrite what you type, in any app, with one shortcut. Free for Mac and Windows.">
+<meta property="og:image" content="https://nauroman.github.io/HotkeyAI/icon.png">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" type="image/png" href="icon.png">
+<style>
+  :root {
+    --bg: #f7f7fb; --surface: #ffffff; --text: #1c1c24; --muted: #5c5f70; --line: #e3e3ee;
+    --accent: #5b3df0; --accent-text: #ffffff; --accent-soft: #ebe6ff; --code: #f0f0f7;
+    --glow: rgba(143, 107, 255, .18);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #13131a; --surface: #1c1c26; --text: #ececf3; --muted: #a5a7b9; --line: #2d2d3b;
+      --accent: #9d86ff; --accent-text: #150b38; --accent-soft: #29224a; --code: #262633;
+      --glow: rgba(143, 107, 255, .22);
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font: 17px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  a { color: var(--accent); }
+  img { max-width: 100%; height: auto; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 20px; }
+  header.top { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: saturate(1.4) blur(10px); -webkit-backdrop-filter: saturate(1.4) blur(10px); border-bottom: 1px solid var(--line); }
+  header.top .wrap { display: flex; align-items: center; gap: 16px; height: 60px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 19px; color: var(--text); text-decoration: none; }
+  .brand img { width: 30px; height: 30px; }
+  nav { margin-left: auto; display: flex; gap: 18px; font-size: 15px; }
+  nav a { color: var(--muted); text-decoration: none; }
+  nav a:hover { color: var(--text); }
+  .support-link { margin-left: 18px; padding: 7px 15px; border-radius: 999px; background: var(--accent); color: var(--accent-text);
+    font-weight: 600; font-size: 15px; text-decoration: none; white-space: nowrap; }
+  .support-link:hover { filter: brightness(1.08); }
+  @media (max-width: 760px) { nav { display: none; } .support-link { margin-left: auto; } }
+
+  .hero { padding: 64px 0 56px; text-align: center;
+    background: radial-gradient(ellipse 70% 60% at 50% 0%, var(--glow), transparent 70%); }
+  .hero img.icon { width: 120px; height: 120px; }
+  h1 { font-size: clamp(40px, 7vw, 60px); line-height: 1.05; margin: 14px 0 10px; letter-spacing: -0.025em; }
+  .promise { font-size: clamp(22px, 3.4vw, 30px); line-height: 1.3; font-weight: 600; margin: 0 auto 14px; max-width: 720px; }
+  .lead { font-size: clamp(17px, 2.2vw, 20px); color: var(--muted); max-width: 680px; margin: 0 auto 28px; }
+  .buttons { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 13px 22px; border-radius: 12px;
+    font-weight: 600; text-decoration: none; border: 1px solid var(--line); color: var(--text); background: var(--surface); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-text); }
+  a.btn:hover { filter: brightness(1.06); }
+  .btn.soon { color: var(--muted); border-style: dashed; background: transparent; cursor: default; }
+  .note { font-size: 14px; color: var(--muted); margin-top: 14px; }
+  kbd { display: inline-block; min-width: 28px; text-align: center; padding: 1px 7px; border-radius: 6px; background: var(--code);
+    border: 1px solid var(--line); border-bottom-width: 2px; font: 600 0.88em/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; white-space: nowrap; }
+
+  section { padding: 56px 0; border-top: 1px solid var(--line); scroll-margin-top: 60px; }
+  h2 { font-size: clamp(26px, 3.6vw, 34px); margin: 0 0 12px; letter-spacing: -0.01em; }
+  .sub { color: var(--muted); margin: 0 0 28px; max-width: 720px; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 20px 22px; }
+  .card h3 { margin: 0 0 6px; font-size: 18px; }
+  .card p { margin: 0; color: var(--muted); font-size: 16px; }
+  .card p + p { margin-top: 8px; }
+
+  /* Animated example: a draft is replaced after the shortcut. Pure CSS, 16 s loop. */
+  .demo { max-width: 760px; margin: 0 auto; background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(20, 16, 79, .16); overflow: hidden; text-align: left; }
+  .demo-bar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--line);
+    font-size: 13px; color: var(--muted); }
+  .demo-bar i { width: 12px; height: 12px; border-radius: 50%; background: #ff5f57; }
+  .demo-bar i:nth-child(2) { background: #febc2e; }
+  .demo-bar i:nth-child(3) { background: #28c840; margin-right: 8px; }
+  .demo-body { position: relative; padding: 16px 22px 22px; }
+  .demo-meta { font-size: 14px; color: var(--muted); border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-bottom: 14px; }
+  .field { position: relative; min-height: 4.8em; font-size: clamp(16px, 2.4vw, 19px); }
+  .field p { position: absolute; inset: 0; margin: 0; opacity: 0; animation: 16s linear infinite both; }
+  .field .d1 { animation-name: d1; } .field .r1 { animation-name: r1; }
+  .field .d2 { animation-name: d2; } .field .r2 { animation-name: r2; }
+  .demo-keys { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 14px; color: var(--muted); font-size: 14px; }
+  .demo-keys kbd { font-size: 17px; min-width: 38px; padding: 4px 8px; animation: press 16s linear infinite; }
+  .demo-keys span { margin-left: 10px; }
+  .hud { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); white-space: nowrap; background: rgba(28, 28, 36, .92);
+    color: #fff; border-radius: 12px; padding: 7px 14px; font-size: 14px; opacity: 0; animation: 16s linear infinite; pointer-events: none; }
+  .hud.work { animation-name: hud-work; } .hud.done { animation-name: hud-done; }
+  @keyframes d1 { 0% { opacity: 0 } 3%, 24% { opacity: 1 } 27%, 100% { opacity: 0 } }
+  @keyframes r1 { 0%, 26% { opacity: 0 } 29%, 47% { opacity: 1 } 50%, 100% { opacity: 0 } }
+  @keyframes d2 { 0%, 50% { opacity: 0 } 53%, 74% { opacity: 1 } 77%, 100% { opacity: 0 } }
+  @keyframes r2 { 0%, 76% { opacity: 0 } 79%, 97% { opacity: 1 } 100% { opacity: 0 } }
+  @keyframes press {
+    0%, 13%, 21%, 63%, 71%, 100% { background: var(--code); color: var(--text); transform: none; }
+    15%, 19%, 65%, 69% { background: var(--accent); color: var(--accent-text); transform: translateY(2px); }
+  }
+  @keyframes hud-work { 0%, 16%, 27%, 66%, 77%, 100% { opacity: 0 } 18%, 25%, 68%, 75% { opacity: 1 } }
+  @keyframes hud-done { 0%, 27%, 36%, 77%, 86%, 100% { opacity: 0 } 29%, 34%, 79%, 84% { opacity: 1 } }
+  @media (prefers-reduced-motion: reduce) {
+    .field p, .demo-keys kbd, .hud { animation: none; }
+    .field { min-height: 0; }
+    .field p { position: static; opacity: 1; margin-bottom: 6px; }
+    .field .d1, .field .d2 { color: var(--muted); text-decoration: line-through; }
+    .hud { display: none; }
+  }
+
+  .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; margin-top: 32px; }
+  .gallery figure { margin: 0; }
+  .gallery img { display: block; border-radius: 12px; border: 1px solid var(--line); }
+  .gallery figcaption { font-size: 15px; color: var(--muted); margin-top: 8px; }
+
+  .platform h3 { display: flex; align-items: center; gap: 8px; font-size: 20px; }
+  .platform .buttons { justify-content: flex-start; margin: 14px 0 4px; }
+  .platform .btn { width: 100%; }
+
+  .steps { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 760px) { .steps { grid-template-columns: 1fr; } }
+  .steps ol { list-style: none; counter-reset: step; margin: 12px 0 0; padding: 0; }
+  .steps li { counter-increment: step; position: relative; padding-left: 44px; margin-bottom: 16px; color: var(--muted); font-size: 16px; }
+  .steps li strong { color: var(--text); }
+  .steps li::before { content: counter(step); position: absolute; left: 0; top: -2px; width: 30px; height: 30px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; background: var(--accent-soft); color: var(--accent); font-weight: 700; font-size: 15px; }
+  .why { margin-top: 16px; border-left: 4px solid var(--accent); background: var(--accent-soft); border-radius: 0 14px 14px 0; padding: 16px 20px; }
+  .why h3 { margin: 0 0 4px; font-size: 17px; }
+  .why p { margin: 0; font-size: 16px; }
+
+  .support { text-align: center; }
+  .support .sub { margin-left: auto; margin-right: auto; }
+  footer { padding: 32px 0 48px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: space-between; }
+  footer a { color: var(--muted); }
+</style>
 </head>
 <body>
-<main>
-<header>
-  <img src="icon.png" alt="">
-  <div><h1>HotkeyAI</h1><p class="lead">Rewrite the text you are typing, in any app, with one shortcut.</p></div>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#"><img src="icon.png" alt="">HotkeyAI</a>
+    <nav>
+      <a href="#what">What it does</a>
+      <a href="#download">Download</a>
+      <a href="#setup">Setup</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#help">Help</a>
+    </nav>
+    <a class="support-link" href="https://ko-fi.com/nauroman">♥ Support</a>
+  </div>
 </header>
 
-<p>Press <kbd>⌥⌘E</kbd> in any text field to turn your draft into clear, natural English (it translates other languages), or <kbd>⌥⇧⌘E</kbd> to fix it in the language you typed. Add your own actions with their own shortcuts and prompts in Settings.</p>
-<p>HotkeyAI uses Apple Intelligence on your Mac by default. You can also sign in with your ChatGPT account, or use your own OpenAI, Anthropic or Google Gemini API key.</p>
+<main>
+  <div class="hero">
+    <div class="wrap">
+      <img class="icon" src="icon.png" width="256" height="256" alt="HotkeyAI icon">
+      <h1>HotkeyAI</h1>
+      <p class="promise">Rewrite what you type, in any app, with one shortcut.</p>
+      <p class="lead">Press <kbd>⌥⌘E</kbd> on a Mac or <kbd>Win+Alt+E</kbd> on Windows, and your draft turns into clear, natural English. Free for Mac and Windows.</p>
+      <div class="buttons">
+        <a class="btn primary" href="https://github.com/nauroman/HotkeyAI/releases/download/v1.0/HotkeyAI-1.0.dmg">Download for Mac</a>
+        <a class="btn" href="https://apps.microsoft.com/detail/9P6DQ3CCTWFX">Get it for Windows</a>
+      </div>
+      <p class="note">Mac: macOS 14 or later, signed and notarized by Apple. Windows 10 and 11, from the Microsoft Store. <a href="#download">All downloads</a></p>
+    </div>
+  </div>
 
-<h2>Getting started</h2>
-<div class="card">
-<ol>
-  <li><a href="https://github.com/nauroman/HotkeyAI/releases/latest">Download HotkeyAI</a> (macOS 14 or later), open the disk image and drag HotkeyAI to Applications.</li>
-  <li>Open HotkeyAI. The keycap icon appears in the menu bar.</li>
-  <li>Type something in Notes or Mail and press <kbd>⌥⌘E</kbd>.</li>
-  <li>The first time, HotkeyAI opens System Settings → Privacy &amp; Security → Accessibility. Turn on HotkeyAI, go back and press the shortcut again.</li>
-</ol>
-</div>
+  <section id="what">
+    <div class="wrap">
+      <h2>What HotkeyAI does</h2>
+      <p class="sub">You write an email, a chat message or a document. Before you send it, press one shortcut. HotkeyAI takes the text from the field you are typing in, has an AI rewrite it, and puts the better version back in the same place. No copying, no switching apps, no chat window.</p>
+      <div class="cards">
+        <div class="card"><h3>Clear, natural English</h3><p><kbd>⌥⌘E</kbd> (<kbd>Win+Alt+E</kbd>) fixes spelling, grammar and awkward phrasing. Write in another language and it translates into fluent English.</p></div>
+        <div class="card"><h3>Fixes in your own language</h3><p><kbd>⌥⇧⌘E</kbd> (<kbd>Win+Alt+Shift+E</kbd>) corrects mistakes in the language you typed and keeps your own words and tone.</p></div>
+        <div class="card"><h3>Works in any app</h3><p>Mail, Messages, Outlook, Slack, Word, Google Docs, any browser: anywhere you can type.</p></div>
+        <div class="card"><h3>Your own shortcuts</h3><p>Add actions like “make it shorter”, “make it polite” or “turn this into bullet points”, each with its own shortcut. Try a prompt on sample text before you use it.</p></div>
+        <div class="card"><h3>The AI you prefer</h3><p>On a Mac it uses Apple Intelligence by default: free, offline and private. You can also sign in with your ChatGPT account or use your own OpenAI, Claude or Gemini key.</p></div>
+        <div class="card"><h3>Stays out of the way</h3><p>A small icon in the menu bar or the taskbar. Your clipboard is put back after every rewrite.</p></div>
+      </div>
+    </div>
+  </section>
 
-<h2>Questions</h2>
-<p><strong>Why does HotkeyAI need Accessibility access?</strong> To press <kbd>⌘A</kbd>, <kbd>⌘C</kbd> and <kbd>⌘V</kbd> for you in the field you are typing in. It does not read your screen or watch your typing.</p>
-<p><strong>The switch is on but HotkeyAI still asks for access.</strong> Select HotkeyAI in the list, remove it with −, then choose "Allow keyboard access…" in the HotkeyAI menu and turn it on again.</p>
-<p><strong>Where does my text go?</strong> Only to the AI provider you chose for the action. With Apple Intelligence it stays on your Mac. See the <a href="privacy.html">privacy policy</a>.</p>
-<p><strong>Something doesn't work?</strong> <a href="https://github.com/nauroman/HotkeyAI/issues">Open an issue on GitHub</a> and describe what the banner at the top of the screen said.</p>
+  <section id="see">
+    <div class="wrap">
+      <h2>See it in action</h2>
+      <p class="sub">Type as fast as you like, press the shortcut, keep going. A small banner shows what HotkeyAI is doing.</p>
+      <div class="demo" role="img" aria-label="Animation: in a new email, the draft “hi team, we has two ideas for the launch and i thinks they is worth discussing tomorow” is replaced with “Hi team, we have two ideas for the launch and I think they are worth discussing tomorrow.” after pressing Option Command E. Then the Russian sentence “я не обещал закончить к пятнице” is replaced with “I did not promise to finish by Friday.”">
+        <div class="demo-bar"><i></i><i></i><i></i>New Message</div>
+        <div class="demo-body">
+          <div class="demo-meta">To: Team &nbsp;·&nbsp; Subject: Launch</div>
+          <div class="field">
+            <p class="d1">hi team, we has two ideas for the launch and i thinks they is worth discussing tomorow</p>
+            <p class="r1">Hi team, we have two ideas for the launch and I think they are worth discussing tomorrow.</p>
+            <p class="d2" lang="ru">я не обещал закончить к пятнице</p>
+            <p class="r2">I did not promise to finish by Friday.</p>
+          </div>
+          <div class="demo-keys"><kbd>⌥</kbd><kbd>⌘</kbd><kbd>E</kbd><span>Win+Alt+E on Windows</span></div>
+          <div class="hud work">✦ Improve in English…</div>
+          <div class="hud done">✓ Done</div>
+        </div>
+      </div>
+      <div class="gallery">
+        <figure>
+          <a href="images/mac-improve-in-english.jpg"><img src="images/mac-improve-in-english.jpg" width="1440" height="900" loading="lazy" alt="HotkeyAI Settings on a Mac: the Improve in English action with its shortcut, prompt and a Try it box"></a>
+          <figcaption>Each action has a shortcut and a prompt. Try it on any text first.</figcaption>
+        </figure>
+        <figure>
+          <a href="images/mac-ai-providers.jpg"><img src="images/mac-ai-providers.jpg" width="1440" height="900" loading="lazy" alt="HotkeyAI Settings on a Mac: AI Providers with Apple Intelligence available and ChatGPT signed in"></a>
+          <figcaption>Apple Intelligence on your Mac, or your ChatGPT, Claude or Gemini account.</figcaption>
+        </figure>
+        <figure>
+          <a href="images/windows-welcome.jpg"><img src="images/windows-welcome.jpg" width="1440" height="810" loading="lazy" alt="HotkeyAI for Windows welcome window explaining Win+Alt+E and Win+Alt+Shift+E"></a>
+          <figcaption>HotkeyAI for Windows: the same actions with <kbd>Win+Alt+E</kbd>.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
 
-<hr>
+  <section id="download">
+    <div class="wrap">
+      <h2>Download</h2>
+      <p class="sub">HotkeyAI is free. Pick the version for your computer.</p>
+      <div class="cards">
+        <div class="card platform">
+          <h3>Mac</h3>
+          <p>macOS 14 Sonoma or later, Apple silicon and Intel.</p>
+          <div class="buttons">
+            <a class="btn primary" href="https://github.com/nauroman/HotkeyAI/releases/download/v1.0/HotkeyAI-1.0.dmg">Download HotkeyAI 1.0 (.dmg)</a>
+            <!-- MAC_APP_STORE: once Apple approves the app, replace this span with
+                 <a class="btn" href="https://apps.apple.com/app/id6838563027">Mac App Store</a> -->
+            <span class="btn soon" aria-disabled="true">Mac App Store: coming soon</span>
+          </div>
+          <p class="note">Disk image, 1.7 MB, signed and notarized by Apple. <a href="https://github.com/nauroman/HotkeyAI/releases">All versions</a></p>
+        </div>
+        <div class="card platform">
+          <h3>Windows</h3>
+          <p>Windows 10 (version 2004 or later) and Windows 11, Intel, AMD and Arm.</p>
+          <div class="buttons">
+            <a class="btn primary" href="https://apps.microsoft.com/detail/9P6DQ3CCTWFX">Get it from Microsoft Store</a>
+          </div>
+          <p class="note">The Microsoft Store installs HotkeyAI and keeps it up to date. It is the only Windows download for now.</p>
+        </div>
+      </div>
+      <p class="note">Apple Intelligence needs a Mac with Apple silicon and macOS 26 or later. Signing in with ChatGPT needs a ChatGPT Plus or Pro plan. OpenAI, Anthropic and Google bill API keys directly.</p>
+    </div>
+  </section>
 
-<h2 lang="ru">По-русски</h2>
-<p lang="ru">Нажмите <kbd>⌥⌘E</kbd> в любом текстовом поле — черновик станет ясным английским текстом (другие языки переводятся), а <kbd>⌥⇧⌘E</kbd> исправит текст на том языке, на котором он набран. Свои действия, сочетания клавиш и промпты добавляются в настройках.</p>
-<p lang="ru">По умолчанию HotkeyAI работает с Apple Intelligence прямо на Mac. Можно также войти с аккаунтом ChatGPT или указать свой ключ OpenAI, Anthropic или Google Gemini.</p>
-<p lang="ru"><a href="https://github.com/nauroman/HotkeyAI/releases/latest">Скачайте HotkeyAI</a> (macOS 14 или новее), откройте образ диска и перетащите HotkeyAI в «Программы».</p>
-<p lang="ru">При первом нажатии HotkeyAI откроет Системные настройки → Конфиденциальность и безопасность → Универсальный доступ: включите там HotkeyAI. Вопросы и ошибки — в <a href="https://github.com/nauroman/HotkeyAI/issues">разделе Issues на GitHub</a>.</p>
+  <section id="setup">
+    <div class="wrap">
+      <h2>Set up in a minute</h2>
+      <p class="sub">You do this once. HotkeyAI can then open by itself when you log in.</p>
+      <div class="steps">
+        <div class="card">
+          <h3>On a Mac</h3>
+          <ol>
+            <li><strong>Install.</strong> Open the disk image and drag HotkeyAI to Applications, then open it. The keycap icon appears in the menu bar.</li>
+            <li><strong>Allow keyboard access.</strong> HotkeyAI opens System Settings → Privacy &amp; Security → Accessibility. Turn on HotkeyAI.</li>
+            <li><strong>Try it.</strong> Type something in Notes or Mail and press <kbd>⌥⌘E</kbd>.</li>
+            <li><strong>No Apple Intelligence?</strong> Sign in with ChatGPT or paste an API key in HotkeyAI → Settings → AI Providers.</li>
+          </ol>
+        </div>
+        <div class="card">
+          <h3>On Windows</h3>
+          <ol>
+            <li><strong>Install.</strong> Get HotkeyAI from the Microsoft Store and open it. The keycap icon appears in the notification area of the taskbar (it may be under <b>^</b>).</li>
+            <li><strong>Connect an AI.</strong> Sign in with your ChatGPT Plus or Pro account, or add an OpenAI, Claude or Gemini API key.</li>
+            <li><strong>Try it.</strong> Type in any text field and press <kbd>Win+Alt+E</kbd>, or <kbd>Win+Alt+Shift+E</kbd> to fix it in your language.</li>
+          </ol>
+          <p>Windows needs no extra permission.</p>
+        </div>
+      </div>
+      <div class="why">
+        <h3>Why does the Mac ask for Accessibility access?</h3>
+        <p>macOS lets an app press keys for you only with your permission. HotkeyAI uses it to press <kbd>⌘A</kbd>, <kbd>⌘C</kbd> and <kbd>⌘V</kbd> in the field you are typing in, and only when you press one of your shortcuts. It does not read your screen or record your typing.</p>
+      </div>
+    </div>
+  </section>
 
-<nav><a href="privacy.html">Privacy policy</a> · <a href="https://github.com/nauroman/HotkeyAI">Source code</a></nav>
+  <section id="privacy">
+    <div class="wrap">
+      <h2>Privacy</h2>
+      <p class="sub">HotkeyAI does not collect, store or share your personal data. There is no account with us, no server, no analytics, no tracking and no advertising. <a href="privacy.html">Read the privacy policy</a></p>
+      <div class="cards">
+        <div class="card"><h3>Your text goes where you choose</h3><p>Only to the AI you picked for the action, directly from your computer and under your own account. With Apple Intelligence it never leaves your Mac.</p></div>
+        <div class="card"><h3>Your keys stay with you</h3><p>API keys and sign-in tokens are kept in your Mac's Keychain, or encrypted for your Windows account.</p></div>
+        <div class="card"><h3>Open source</h3><p>Anyone can read <a href="https://github.com/nauroman/HotkeyAI">HotkeyAI's code on GitHub</a>.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="help">
+    <div class="wrap">
+      <h2>Help</h2>
+      <p class="sub">Questions, problems and ideas are welcome on GitHub. <a href="https://github.com/nauroman/HotkeyAI/issues">See open questions</a> or <a href="https://github.com/nauroman/HotkeyAI/issues/new">ask a new one</a>.</p>
+      <div class="cards">
+        <div class="card"><h3>Something doesn't work?</h3><p><a href="https://github.com/nauroman/HotkeyAI/issues/new">Open an issue on GitHub</a>. Say which computer you use and what the banner at the top of the screen (above the taskbar on Windows) said.</p></div>
+        <div class="card"><h3>The switch is on, but HotkeyAI still asks for access</h3><p>In Accessibility settings, select HotkeyAI and remove it with <b>−</b>. Then choose <b>Allow keyboard access…</b> in the HotkeyAI menu and turn it on again.</p></div>
+        <div class="card"><h3>Nothing changes in some Windows apps</h3><p>Windows doesn't let other apps type into apps that run as administrator, so HotkeyAI can't change text there.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="support" class="support">
+    <div class="wrap">
+      <h2>Support HotkeyAI</h2>
+      <p class="sub">HotkeyAI is free. If it saves you time, you can leave a tip on Ko-fi. It pays for the Apple developer membership and for time to keep HotkeyAI updated.</p>
+      <div class="buttons">
+        <a class="btn primary" href="https://ko-fi.com/nauroman">♥ Support on Ko-fi</a>
+        <a class="btn" href="https://github.com/nauroman/HotkeyAI">★ Star on GitHub</a>
+        <a class="btn" href="https://github.com/nauroman/HotkeyAI/issues/new">Suggest an idea</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="ru" lang="ru">
+    <div class="wrap">
+      <h2>По-русски</h2>
+      <p class="sub">Нажмите <kbd>⌥⌘E</kbd> на Mac или <kbd>Win+Alt+E</kbd> в Windows в любом текстовом поле, и черновик станет ясным английским текстом (другие языки переводятся). <kbd>⌥⇧⌘E</kbd> или <kbd>Win+Alt+Shift+E</kbd> исправит текст на том языке, на котором он набран. Свои действия, сочетания клавиш и промпты добавляются в настройках.</p>
+      <p class="sub">На Mac HotkeyAI по умолчанию работает с Apple Intelligence прямо на компьютере. Можно также войти с аккаунтом ChatGPT или указать свой ключ OpenAI, Anthropic или Google Gemini. <a href="https://github.com/nauroman/HotkeyAI/releases/download/v1.0/HotkeyAI-1.0.dmg">Скачать для Mac</a> · <a href="https://apps.microsoft.com/detail/9P6DQ3CCTWFX">Microsoft Store</a> · <a href="https://github.com/nauroman/HotkeyAI/issues">вопросы на GitHub</a></p>
+    </div>
+  </section>
 </main>
+
+<footer>
+  <div class="wrap">
+    <span>HotkeyAI · <a href="https://github.com/nauroman/HotkeyAI/blob/main/LICENSE">MIT license</a></span>
+    <span><a href="https://github.com/nauroman/HotkeyAI">GitHub</a> · <a href="https://github.com/nauroman/HotkeyAI/releases">Releases</a> · <a href="privacy.html">Privacy policy</a></span>
+  </div>
+</footer>
 </body>
 </html>
