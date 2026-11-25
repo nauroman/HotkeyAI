@@ -1,5 +1,7 @@
 <!doctype html>
-<html lang="en" data-os="mac">
+<!-- MAC_APP_STORE: when Apple approves HotkeyAI, change data-mas="soon" to data-mas="live".
+     The Mac App Store links on this page already point to https://apps.apple.com/app/id6838563027 -->
+<html lang="en" data-os="any" data-mas="soon">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -7,9 +9,9 @@
 <meta name="description" content="Write in any app, press one shortcut, and HotkeyAI fixes your draft in place: clear, natural English, or your own language without the mistakes. Free for Mac and Windows.">
 <meta property="og:title" content="HotkeyAI">
 <meta property="og:description" content="Your draft, fixed in place. One shortcut in any app, on Mac and Windows.">
-<meta property="og:image" content="https://nauroman.github.io/HotkeyAI/icon.png">
+<meta property="og:image" content="https://nauroman.github.io/HotkeyAI/icon.webp">
 <meta name="color-scheme" content="light dark">
-<link rel="icon" type="image/png" href="icon.png">
+<link rel="icon" type="image/webp" href="icon.webp">
 <style>
   /* Layout: a writing desk. Words on the left, the live draft on the right; every section
      pairs a short text with a specimen of the real thing, left-aligned, on a 1120px column. */
@@ -114,8 +116,15 @@
   .os-switch { display: inline-flex; padding: 3px; border: 1px solid var(--rule); border-radius: 999px; background: var(--sheet); }
   .os-switch button { font: 600 .82rem var(--f-body); color: var(--ink-2); background: none; border: 0; border-radius: 999px; padding: 5px 12px; cursor: pointer; }
   .os-switch button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
-  :root[data-os="win"] .hero .btn-win { order: -1; background: var(--pen); border-color: var(--pen); color: var(--pen-ink); }
-  :root[data-os="win"] .hero .btn-mac { background: var(--sheet); border-color: var(--rule); color: var(--ink); }
+  /* Install controls: the store for the visitor's computer first, both when it is unknown. */
+  :root[data-os="mac"] .hero .get-win, :root[data-os="win"] .hero .get-mac { display: none; }
+  :root[data-mas="soon"] .mas-live, :root[data-mas="live"] .mas-soon { display: none; }
+  .store { display: inline-flex; align-items: center; gap: 10px; padding: 11px 20px; border-radius: 12px; text-decoration: none;
+    background: var(--ink); color: var(--paper); border: 1px solid var(--ink); line-height: 1.15; }
+  .store small { display: block; font-size: .72rem; font-weight: 500; opacity: .8; }
+  .store b { display: block; font-size: 1.05rem; font-weight: 650; }
+  a.store:hover { filter: brightness(1.15); }
+  .store.soon { background: transparent; color: var(--ink-2); border: 1px dashed var(--strike); cursor: default; }
   .hero .note { font-size: var(--s-small); color: var(--ink-2); max-width: 32rem; }
 
   .desk { display: grid; gap: 18px; min-width: 0; }
@@ -231,6 +240,12 @@
   .dl h3 { font-size: 1.5rem; }
   .dl .btns { margin-top: 4px; }
   .dl .note { font-size: var(--s-small); color: var(--ink-2); }
+  .other { margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--rule); display: grid; gap: 14px; max-width: 52rem; color: var(--ink-2); font-size: .97rem; }
+  .other h3 { font-size: 1.05rem; color: var(--ink); }
+  .other dl { margin: 0; display: grid; grid-template-columns: 9rem minmax(0, 1fr); gap: 10px 20px; }
+  .other dt { font-weight: 650; color: var(--ink); }
+  .other dd { margin: 0; }
+  @media (max-width: 560px) { .other dl { grid-template-columns: minmax(0, 1fr); gap: 2px; } .other dd { margin-bottom: 10px; } }
   .dl-foot { margin-top: 18px; font-size: var(--s-small); color: var(--ink-2); max-width: 46rem; }
   @media (max-width: 680px) {
     .dl { grid-template-columns: minmax(0, 1fr); }
@@ -278,12 +293,12 @@
 <body>
 <header class="top">
   <div class="wrap">
-    <a class="brand" href="#"><img src="icon.png" alt="">HotkeyAI</a>
+    <a class="brand" href="#"><img src="icon.webp" width="28" height="28" alt="">HotkeyAI</a>
     <nav aria-label="Sections">
       <a href="#shortcuts">Shortcuts</a>
       <a href="#ai">AI</a>
       <a href="#actions">Your actions</a>
-      <a href="#download">Download</a>
+      <a href="#download">Install</a>
       <a href="#setup">Setup</a>
       <a href="#privacy">Privacy</a>
       <a href="#help">Help</a>
@@ -309,10 +324,12 @@
           </div>
         </div>
         <div class="btns">
-          <a class="btn primary btn-mac" href="https://github.com/nauroman/HotkeyAI/releases/download/v1.0/HotkeyAI-1.0.dmg">Download for Mac</a>
-          <a class="btn btn-win" href="https://apps.microsoft.com/detail/9P6DQ3CCTWFX">Get it for Windows</a>
+          <a class="store get-win" href="https://apps.microsoft.com/detail/9P6DQ3CCTWFX"><span><small>Get it from</small><b>Microsoft Store</b></span></a>
+          <a class="store get-mac mas-live" href="https://apps.apple.com/app/id6838563027"><span><small>Download on the</small><b>Mac App Store</b></span></a>
+          <a class="btn primary get-mac mas-soon" href="https://github.com/nauroman/HotkeyAI/releases/download/v1.0/HotkeyAI-1.0.dmg">Download for Mac</a>
+          <span class="store soon get-mac mas-soon" aria-disabled="true"><span><small>Coming soon to the</small><b>Mac App Store</b></span></span>
         </div>
-        <p class="note">macOS 14 or later, signed and notarized by Apple. Windows 10 and 11 from the Microsoft Store. <a href="#download">All downloads</a></p>
+        <p class="note">Free. macOS 14 or later, Windows 10 and 11. <a href="#other">Other ways to install</a></p>
       </div>
 
       <div class="desk">
@@ -417,7 +434,7 @@
         </ul>
       </div>
       <figure class="shot">
-        <img src="images/settings-actions.png" width="684" height="404" alt="The Actions list in HotkeyAI Settings on a Mac: Improve in English (Option Command E), Fix in original language (Option Shift Command E) and Polish elegantly (original language), each turned on and using Apple Intelligence">
+        <img src="images/settings-actions.webp" width="684" height="404" alt="The Actions list in HotkeyAI Settings on a Mac: Improve in English (Option Command E), Fix in original language (Option Shift Command E) and Polish elegantly (original language), each turned on and using Apple Intelligence">
         <figcaption>The Actions list in HotkeyAI Settings on a Mac. The third built-in action gets a shortcut when you give it one.</figcaption>
       </figure>
     </div>
@@ -426,29 +443,42 @@
   <section id="download" class="sec" aria-labelledby="download-title">
     <div class="wrap">
       <div class="sec-head">
-        <h2 id="download-title">Download</h2>
-        <p class="intro">HotkeyAI is free. No account needed.</p>
+        <h2 id="download-title">Install</h2>
+        <p class="intro">HotkeyAI is free and needs no account. The store for your computer installs it and keeps it up to date.</p>
       </div>
       <div class="dl">
         <div>
           <h3>Mac</h3>
           <p class="muted">macOS 14 Sonoma or later, Apple silicon and Intel.</p>
           <div class="btns">
-            <a class="btn primary" href="https://github.com/nauroman/HotkeyAI/releases/download/v1.0/HotkeyAI-1.0.dmg">Download HotkeyAI 1.0 (.dmg)</a>
-            <!-- MAC_APP_STORE: once Apple approves the app, replace this span with
-                 <a class="btn" href="https://apps.apple.com/app/id6838563027">Mac App Store</a> -->
-            <span class="btn soon" aria-disabled="true">Mac App Store: coming soon</span>
+            <a class="store get-mac mas-live" href="https://apps.apple.com/app/id6838563027"><span><small>Download on the</small><b>Mac App Store</b></span></a>
+            <span class="store soon get-mac mas-soon" aria-disabled="true"><span><small>Coming soon to the</small><b>Mac App Store</b></span></span>
           </div>
-          <p class="note">Disk image, 1.7 MB, signed and notarized by Apple. <a href="https://github.com/nauroman/HotkeyAI/releases">All versions</a></p>
+          <p class="note mas-live">The Mac App Store installs HotkeyAI and keeps it up to date.</p>
+          <div class="mas-soon">
+            <p class="note">Apple is reviewing HotkeyAI for the Mac App Store. Until it arrives, download the same app, signed and notarized by Apple:</p>
+            <div class="btns" style="margin-top:12px"><a class="btn primary" href="https://github.com/nauroman/HotkeyAI/releases/download/v1.0/HotkeyAI-1.0.dmg">Download HotkeyAI 1.0 (.dmg)</a></div>
+          </div>
         </div>
         <div>
           <h3>Windows</h3>
           <p class="muted">Windows 10 (version 2004 or later) and Windows 11, Intel, AMD and Arm.</p>
           <div class="btns">
-            <a class="btn primary" href="https://apps.microsoft.com/detail/9P6DQ3CCTWFX">Get it from Microsoft Store</a>
+            <a class="store get-win" href="https://apps.microsoft.com/detail/9P6DQ3CCTWFX"><span><small>Get it from</small><b>Microsoft Store</b></span></a>
           </div>
-          <p class="note">The Microsoft Store installs HotkeyAI and keeps it up to date. It is the only Windows download for now.</p>
+          <p class="note">The Microsoft Store installs HotkeyAI and keeps it up to date.</p>
         </div>
+      </div>
+
+      <div class="other" id="other">
+        <h3>Other ways to install</h3>
+        <p>Use these when the store isn't available in your country or region, or when a work or school computer blocks it.</p>
+        <dl>
+          <dt>Mac</dt>
+          <dd><a href="https://github.com/nauroman/HotkeyAI/releases/download/v1.0/HotkeyAI-1.0.dmg">HotkeyAI-1.0.dmg</a> (1.7 MB): open it and drag HotkeyAI to Applications. It is signed with Developer ID and notarized by Apple. It needs macOS 14 or later, the same as the Mac App Store version, so it doesn't help on an older Mac. It doesn't update itself: get new versions from <a href="https://github.com/nauroman/HotkeyAI/releases">GitHub Releases</a>.</dd>
+          <dt>Windows</dt>
+          <dd>There is no direct download yet; HotkeyAI for Windows comes from the Microsoft Store. If your work computer blocks the Store, ask your IT department to allow HotkeyAI (Store ID 9P6DQ3CCTWFX).</dd>
+        </dl>
       </div>
       <p class="dl-foot">Apple Intelligence needs a Mac with Apple silicon and macOS 26 or later. Signing in with ChatGPT needs a ChatGPT Plus or Pro plan. OpenAI, Anthropic and Google bill API keys directly.</p>
     </div>
@@ -464,7 +494,7 @@
         <div>
           <h3>On a Mac</h3>
           <ol>
-            <li><span><b>Install.</b> Open the disk image, drag HotkeyAI to Applications and open it. The keycap icon appears in the menu bar.</span></li>
+            <li><span><b>Install.</b> <span class="mas-live">Get HotkeyAI from the Mac App Store</span><span class="mas-soon">Open the disk image and drag HotkeyAI to Applications</span>, then open it. The keycap icon appears in the menu bar.</span></li>
             <li><span><b>Allow keyboard access.</b> HotkeyAI opens System Settings → Privacy &amp; Security → Accessibility. Turn on HotkeyAI.</span></li>
             <li><span><b>Try it.</b> Type something in Notes or Mail and press <span class="keys" role="img" aria-label="Option Command E"><kbd>⌥</kbd><kbd>⌘</kbd><kbd>E</kbd></span>.</span></li>
             <li><span><b>No Apple Intelligence?</b> Sign in with ChatGPT or paste an API key in HotkeyAI → Settings → AI Providers.</span></li>
@@ -536,11 +566,14 @@
 </footer>
 
 <script>
-  // Mac or Windows shortcuts: start from the visitor's computer, let them switch. Inline, no network.
+  // Mac or Windows: shortcuts and the install button follow the visitor's computer (both when unknown,
+  // for example on a phone), and the switch changes them. Inline, no network.
   (function () {
     var root = document.documentElement;
     var platform = (navigator.userAgentData && navigator.userAgentData.platform) || navigator.platform || "";
-    if (/^win/i.test(platform) || /Windows NT/.test(navigator.userAgent)) root.setAttribute("data-os", "win");
+    var ua = navigator.userAgent;
+    if (/^win/i.test(platform) || /Windows NT/.test(ua)) root.setAttribute("data-os", "win");
+    else if ((/^mac/i.test(platform) || /Macintosh/.test(ua)) && !(navigator.maxTouchPoints > 1)) root.setAttribute("data-os", "mac");
     var group = document.getElementById("os-switch");
     var buttons = group.querySelectorAll("button");
     function show(os) {
