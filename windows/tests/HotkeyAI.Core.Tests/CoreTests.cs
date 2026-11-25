@@ -131,6 +131,42 @@ public class ModelTests
     }
 }
 
+public class TrayMenuTests
+{
+    [Fact]
+    public void AboutIsTheLastItemBeforeQuit()
+    {
+        var items = TrayMenu.Build(DefaultPrompts.DefaultActions(), runningActionName: null);
+        Assert.Equal(TrayMenu.Quit, items[^1].Command);
+        Assert.Equal("&Quit HotkeyAI", items[^1].Label);
+        Assert.Equal(TrayMenu.About, items[^2].Command);
+        Assert.Equal("&About HotkeyAI…", items[^2].Label);
+        Assert.True(items[^3].IsSeparator);
+        Assert.Equal("https://nauroman.github.io/HotkeyAI/", TrayMenu.ProjectPageUrl);
+    }
+
+    [Fact]
+    public void ActionsComeFirstWithTheirShortcuts()
+    {
+        var actions = DefaultPrompts.DefaultActions();
+        actions[2].Name = "Q&A";
+        var items = TrayMenu.Build(actions, runningActionName: null);
+        Assert.Equal(new TrayMenuItem(TrayMenu.FirstAction, "Improve in English\tWin+Alt+E"), items[0]);
+        Assert.Equal(new TrayMenuItem(TrayMenu.FirstAction + 2, "Q&&A"), items[2]);
+        Assert.Single(items, i => i.IsDefault && i.Command == TrayMenu.Settings);
+    }
+
+    [Fact]
+    public void RunningActionAndEmptyListAreGrayedOut()
+    {
+        var items = TrayMenu.Build([], runningActionName: "Improve in English");
+        Assert.Equal(new TrayMenuItem(TrayMenu.None, "Working on “Improve in English”…", Enabled: false), items[0]);
+        Assert.True(items[1].IsSeparator);
+        Assert.Equal(new TrayMenuItem(TrayMenu.None, "No actions — add one in Settings", Enabled: false), items[2]);
+        Assert.Equal(TrayMenu.About, items[^2].Command);
+    }
+}
+
 public class AppModelTests : IDisposable
 {
     private readonly string _dir = Path.Combine(Path.GetTempPath(), "hotkeyai-tests-" + Guid.NewGuid().ToString("N"));

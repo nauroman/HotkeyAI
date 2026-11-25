@@ -1,4 +1,6 @@
-# Microsoft Store submission — HotkeyAI for Windows 1.0
+# Microsoft Store submission — HotkeyAI for Windows
+
+First release 1.0.0 (2026-11-24). Current update: **1.0.1**, see section 10.
 
 Everything to paste into Partner Center. Publisher account: the one that already
 publishes ReasonKey and Arrow Keys. Field lengths are checked by `windows/store/check-listing.py`.
@@ -86,7 +88,7 @@ HotkeyAI presses Ctrl+A, Ctrl+C and Ctrl+V for you, only in the field you are ty
 An AI provider is required: a ChatGPT Plus or Pro plan, or an API key from OpenAI, Anthropic or Google (Google AI Studio offers free keys with a daily limit). HotkeyAI is open source: github.com/nauroman/HotkeyAI
 
 **What's new in this version**
-(empty for the first release, as Partner Center suggests)
+About HotkeyAI… in the notification-area menu opens the HotkeyAI website, with setup steps, answers to common questions and the privacy policy.
 
 **Product features** (≤ 20, each ≤ 200)
 - Win+Alt+E turns your draft into clear, natural English, translating from any language
@@ -128,7 +130,7 @@ How to test:
 2. HotkeyAI needs an AI provider. Use the Google Gemini test API key from the Credentials section of this page: in Settings > AI Providers, paste it under "Google Gemini", press Save, then set "Default provider" at the top of that page to "Gemini (Google API key)". ("Sign in with ChatGPT" also works with any ChatGPT Plus or Pro account.)
 3. In Settings → Actions, choose "Improve in English" and press "Run on this text" in the Try it box. The Russian sample is translated into English.
 4. Open Notepad, type "we has two ideas and i thinks they is good", and press Win+Alt+E. The text is replaced with corrected English and a banner above the taskbar says "Done". Win+Alt+Shift+E corrects text in its own language.
-5. The keycap icon in the notification area (it may be under ^) opens Settings with a left click; a right click shows the actions and Quit.
+5. The keycap icon in the notification area (it may be under ^) opens Settings with a left click; a right click shows the actions, Settings, About HotkeyAI… (opens https://nauroman.github.io/HotkeyAI/ in the default browser) and Quit.
 
 Restricted capability runFullTrust: HotkeyAI is a Win32 desktop app. Full trust is used only to (a) register the user's global shortcuts with RegisterHotKey, (b) send Ctrl+A, Ctrl+C and Ctrl+V with SendInput to the focused window after the user presses one of those shortcuts, (c) read and restore the clipboard around that copy and paste, and (d) show a notification-area icon. It runs at the user's normal privilege level, does not install drivers or services, does not use a keyboard hook, does not read the screen and does not record typing.
 
@@ -146,3 +148,20 @@ a free Google AI Studio key created only for certification, revoked after public
 - Install the public build on a clean Windows user profile; check first launch, both shortcuts in
   Notepad and Word, the tray menu, open-at-sign-in on and off, and uninstall.
 - Revoke the certification test key once the app is published.
+
+## 10. Update 1.0.1
+
+What changed: **About HotkeyAI…** in the notification-area menu, last before Quit, opens
+https://nauroman.github.io/HotkeyAI/ (pull request #3). Nothing else in the listing changes.
+
+1. Merge #1 (Windows port) and then #3 (About HotkeyAI…) into `main`.
+2. Wait for the **Windows** workflow run on `main` to pass, and download its **HotkeyAI-Store**
+   artifact: `HotkeyAI_1.0.1.0.msixbundle` plus `build.json` (identity `RotorlashLabs.HotkeyAI`,
+   version `1.0.1.0`, SHA-256 of every file).
+3. Partner Center → HotkeyAI → **Start update**. Only these pages change:
+   - **Packages**: remove 1.0.0.0, upload `HotkeyAI_1.0.1.0.msixbundle` (about 150 MB, drag it in).
+   - **Store listings → English (United States) → What's new in this version**: the text in section 7.
+   - **Submission options → Notes for certification**: section 8 as it is now (step 5 mentions
+     About HotkeyAI…). Put a working test key in **Credentials** again if the first one was revoked.
+4. Choose when to publish (automatically after certification is the default), then
+   **Submit to the Store**.

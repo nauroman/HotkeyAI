@@ -45,8 +45,20 @@ struct MenuContent: View {
         Button("Settings…") { SettingsWindowController.shared.show() }
             .keyboardShortcut(",")
         Divider()
+        Button(ProjectPage.menuTitle) { ProjectPage.open() }
         Button("Quit HotkeyAI") { NSApp.terminate(nil) }
             .keyboardShortcut("q")
+    }
+}
+
+/// HotkeyAI's website (docs/index.html, published with GitHub Pages): downloads, setup, help.
+/// "About HotkeyAI…", the last item before Quit in both menus, opens it in the default browser.
+enum ProjectPage {
+    static let url = URL(string: "https://nauroman.github.io/HotkeyAI/")!
+    static let menuTitle = "About HotkeyAI…"
+
+    @MainActor static func open() {
+        NSWorkspace.shared.open(url)
     }
 }
 
@@ -70,11 +82,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let main = NSMenu()
 
         let appItem = NSMenuItem()
-        let appMenu = NSMenu()
-        appMenu.addItem(withTitle: "Settings…", action: #selector(openSettings), keyEquivalent: ",").target = self
-        appMenu.addItem(.separator())
-        appMenu.addItem(withTitle: "Quit HotkeyAI", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
-        appItem.submenu = appMenu
+        appItem.submenu = Self.makeAppMenu(target: self)
         main.addItem(appItem)
 
         let editItem = NSMenuItem()
@@ -98,8 +106,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.mainMenu = main
     }
 
+    /// The HotkeyAI menu of the menu bar, shown while the Settings window is in front.
+    /// Ends like the menu bar icon's menu: About HotkeyAI…, then Quit.
+    static func makeAppMenu(target: AppDelegate?) -> NSMenu {
+        let menu = NSMenu()
+        menu.addItem(withTitle: "Settings…", action: #selector(AppDelegate.openSettings), keyEquivalent: ",").target = target
+        menu.addItem(.separator())
+        menu.addItem(withTitle: ProjectPage.menuTitle, action: #selector(AppDelegate.openProjectPage), keyEquivalent: "").target = target
+        menu.addItem(withTitle: "Quit HotkeyAI", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        return menu
+    }
+
     @objc private func openSettings() {
         SettingsWindowController.shared.show()
+    }
+
+    @objc private func openProjectPage() {
+        ProjectPage.open()
     }
 
     private func runOnboarding() {

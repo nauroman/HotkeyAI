@@ -53,10 +53,25 @@ shipping a closed-source App Store build.
 
 ## Download
 
-Get `HotkeyAI-<version>.dmg` from [Releases](https://github.com/nauroman/HotkeyAI/releases/latest),
-open it and drag HotkeyAI to Applications (macOS 14 or later). The app is signed with
-Developer ID and notarized by Apple. `TEAM_ID=<your team ID> scripts/developer-id-release.sh`
-makes that disk image from the same archive as the App Store build.
+HotkeyAI is installed through the stores only:
+
+- **Windows:** the [Microsoft Store](https://apps.microsoft.com/detail/9P6DQ3CCTWFX). There is no
+  standalone Windows installer, and none is planned.
+- **Mac:** the Mac App Store, once Apple approves HotkeyAI. Until then, get `HotkeyAI-<version>.dmg`
+  from [Releases](https://github.com/nauroman/HotkeyAI/releases/latest), open it and drag HotkeyAI to
+  Applications (macOS 14 or later). The app is signed with Developer ID and notarized by Apple.
+  `TEAM_ID=<your team ID> scripts/developer-id-release.sh` makes that disk image from the same archive
+  as the App Store build.
+
+When the Mac App Store version goes live, both apps are in their stores and the GitHub downloads go away:
+
+1. In `docs/index.html`, change `data-mas="soon"` to `data-mas="live"` (see the `MAC_APP_STORE`
+   comment at the top of the file).
+2. Remove the DMG from the website: the `mas-soon` download blocks and the Mac entry in
+   "Other ways to install".
+3. Remove the DMG instructions from this section of the README.
+4. New GitHub releases carry source and notes only: no installers attached or advertised.
+5. Deleting the installers already attached to past releases needs the owner's yes first.
 
 ## Build and run (no Xcode required)
 

@@ -186,3 +186,18 @@ import AppKit
         #expect(DefaultPrompts.cleanAppleOutput("\"quoted\"", source: "\"quoted\"", action: actions[1]) == "\"quoted\"")
     }
 }
+
+@MainActor @Suite struct MenuTests {
+    @Test func aboutIsTheLastItemBeforeQuit() {
+        let items = AppDelegate.makeAppMenu(target: nil).items
+        #expect(Array(items.map(\.title).suffix(2)) == ["About HotkeyAI…", "Quit HotkeyAI"])
+        #expect(items[items.count - 3].isSeparatorItem)
+        #expect(ProjectPage.menuTitle == "About HotkeyAI…")
+    }
+
+    @Test func aboutOpensTheProjectPage() {
+        #expect(ProjectPage.url.absoluteString == "https://nauroman.github.io/HotkeyAI/")
+        let about = AppDelegate.makeAppMenu(target: nil).items.first { $0.title == ProjectPage.menuTitle }
+        #expect(about?.action == NSSelectorFromString("openProjectPage"))
+    }
+}

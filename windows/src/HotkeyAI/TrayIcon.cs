@@ -10,8 +10,6 @@ namespace HotkeyAI;
 /// The notification-area icon (the Windows counterpart of the Mac menu bar icon) and its menu.
 internal sealed class TrayIcon : IDisposable
 {
-    private const int CmdSettings = 1, CmdQuit = 2, CmdFirstAction = 100;
-
     private readonly Forms.NotifyIcon _icon = new();
     private readonly AppModel _model;
     private readonly ActionRunner _runner;
@@ -78,25 +76,16 @@ internal sealed class TrayIcon : IDisposable
         var actions = _model.Actions.Where(a => a.Enabled).ToList();
         try
         {
-            if (_runner.RunningActionName is { } running)
+            foreach (var item in TrayMenu.Build(actions, _runner.RunningActionName))
             {
-                Win32.AppendMenu(menu, Win32.MF_STRING | Win32.MF_GRAYED, UIntPtr.Zero, $"Working on “{running}”…");
-                Win32.AppendMenu(menu, Win32.MF_SEPARATOR, UIntPtr.Zero, null);
+                if (item.IsSeparator)
+                {
+                    Win32.AppendMenu(menu, Win32.MF_SEPARATOR, UIntPtr.Zero, null);
+                    continue;
+                }
+                Win32.AppendMenu(menu, item.Enabled ? Win32.MF_STRING : Win32.MF_STRING | Win32.MF_GRAYED, (UIntPtr)(uint)item.Command, item.Label);
+                if (item.IsDefault) Win32.SetMenuDefaultItem(menu, (uint)item.Command, 0);
             }
-            if (actions.Count == 0)
-                Win32.AppendMenu(menu, Win32.MF_STRING | Win32.MF_GRAYED, UIntPtr.Zero, "No actions — add one in Settings");
-            for (var i = 0; i < actions.Count; i++)
-            {
-                // Text after a tab is right-aligned, like a shortcut in any Windows menu.
-                var label = actions[i].Name.Replace("&", "&&");
-                if (actions[i].Shortcut is { } combo) label += "\t" + combo.DisplayString;
-                Win32.AppendMenu(menu, Win32.MF_STRING, (UIntPtr)(uint)(CmdFirstAction + i), label);
-            }
-            Win32.AppendMenu(menu, Win32.MF_SEPARATOR, UIntPtr.Zero, null);
-            Win32.AppendMenu(menu, Win32.MF_STRING, (UIntPtr)CmdSettings, "&Settings…");
-            Win32.SetMenuDefaultItem(menu, CmdSettings, 0);
-            Win32.AppendMenu(menu, Win32.MF_SEPARATOR, UIntPtr.Zero, null);
-            Win32.AppendMenu(menu, Win32.MF_STRING, (UIntPtr)CmdQuit, "&Quit HotkeyAI");
 
             Win32.GetCursorPos(out var point);
             // The documented way to make a notification-icon menu close when the user clicks elsewhere.
@@ -107,10 +96,11 @@ internal sealed class TrayIcon : IDisposable
 
             switch (command)
             {
-                case CmdSettings: _openSettings(); break;
-                case CmdQuit: _quit(); break;
-                case >= CmdFirstAction when command - CmdFirstAction < actions.Count:
-                    _runner.PerformFromMenu(actions[command - CmdFirstAction]);
+                case TrayMenu.Settings: _openSettings(); break;
+                case TrayMenu.About: WindowInfo.OpenUrl(TrayMenu.ProjectPageUrl); break;
+                case TrayMenu.Quit: _quit(); break;
+                case >= TrayMenu.FirstAction when command - TrayMenu.FirstAction < actions.Count:
+                    _runner.PerformFromMenu(actions[command - TrayMenu.FirstAction]);
                     break;
             }
         }
