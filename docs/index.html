@@ -40,7 +40,10 @@
   nav { margin-left: auto; display: flex; gap: 18px; font-size: 15px; }
   nav a { color: var(--muted); text-decoration: none; }
   nav a:hover { color: var(--text); }
-  @media (max-width: 760px) { nav { display: none; } }
+  .support-link { margin-left: 18px; padding: 7px 15px; border-radius: 999px; background: var(--accent); color: var(--accent-text);
+    font-weight: 600; font-size: 15px; text-decoration: none; white-space: nowrap; }
+  .support-link:hover { filter: brightness(1.08); }
+  @media (max-width: 760px) { nav { display: none; } .support-link { margin-left: auto; } }
 
   .hero { padding: 64px 0 56px; text-align: center;
     background: radial-gradient(ellipse 70% 60% at 50% 0%, var(--glow), transparent 70%); }
@@ -142,8 +145,8 @@
       <a href="#setup">Setup</a>
       <a href="#privacy">Privacy</a>
       <a href="#help">Help</a>
-      <a href="#support">Support</a>
     </nav>
+    <a class="support-link" href="https://ko-fi.com/nauroman">♥ Support</a>
   </div>
 </header>
 
