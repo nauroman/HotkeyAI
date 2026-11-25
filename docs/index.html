@@ -71,7 +71,7 @@
   .card p + p { margin-top: 8px; }
 
   /* Animated example: a draft is replaced after the shortcut. Pure CSS, 16 s loop. */
-  .demo { max-width: 760px; margin: 0 auto; background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+  .demo { max-width: 760px; margin: 40px auto 0; background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
     box-shadow: 0 20px 50px rgba(20, 16, 79, .16); overflow: hidden; text-align: left; }
   .demo-bar { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--line);
     font-size: 13px; color: var(--muted); }
@@ -162,28 +162,6 @@
         <a class="btn" href="https://apps.microsoft.com/detail/9P6DQ3CCTWFX">Get it for Windows</a>
       </div>
       <p class="note">Mac: macOS 14 or later, signed and notarized by Apple. Windows 10 and 11, from the Microsoft Store. <a href="#download">All downloads</a></p>
-    </div>
-  </div>
-
-  <section id="what">
-    <div class="wrap">
-      <h2>What HotkeyAI does</h2>
-      <p class="sub">You write an email, a chat message or a document. Before you send it, press one shortcut. HotkeyAI takes the text from the field you are typing in, has an AI rewrite it, and puts the better version back in the same place. No copying, no switching apps, no chat window.</p>
-      <div class="cards">
-        <div class="card"><h3>Clear, natural English</h3><p><kbd>⌥⌘E</kbd> (<kbd>Win+Alt+E</kbd>) fixes spelling, grammar and awkward phrasing. Write in another language and it translates into fluent English.</p></div>
-        <div class="card"><h3>Fixes in your own language</h3><p><kbd>⌥⇧⌘E</kbd> (<kbd>Win+Alt+Shift+E</kbd>) corrects mistakes in the language you typed and keeps your own words and tone.</p></div>
-        <div class="card"><h3>Works in any app</h3><p>Mail, Messages, Outlook, Slack, Word, Google Docs, any browser: anywhere you can type.</p></div>
-        <div class="card"><h3>Your own shortcuts</h3><p>Add actions like “make it shorter”, “make it polite” or “turn this into bullet points”, each with its own shortcut. Try a prompt on sample text before you use it.</p></div>
-        <div class="card"><h3>The AI you prefer</h3><p>On a Mac it uses Apple Intelligence by default: free, offline and private. You can also sign in with your ChatGPT account or use your own OpenAI, Claude or Gemini key.</p></div>
-        <div class="card"><h3>Stays out of the way</h3><p>A small icon in the menu bar or the taskbar. Your clipboard is put back after every rewrite.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section id="see">
-    <div class="wrap">
-      <h2>See it in action</h2>
-      <p class="sub">Type as fast as you like, press the shortcut, keep going. A small banner shows what HotkeyAI is doing.</p>
       <div class="demo" role="img" aria-label="Animation: in a new email, the draft “hi team, we has two ideas for the launch and i thinks they is worth discussing tomorow” is replaced with “Hi team, we have two ideas for the launch and I think they are worth discussing tomorrow.” after pressing Option Command E. Then the Russian sentence “я не обещал закончить к пятнице” is replaced with “I did not promise to finish by Friday.”">
         <div class="demo-bar"><i></i><i></i><i></i>New Message</div>
         <div class="demo-body">
@@ -198,6 +176,21 @@
           <div class="hud work">✦ Improve in English…</div>
           <div class="hud done">✓ Done</div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <section id="what">
+    <div class="wrap">
+      <h2>What HotkeyAI does</h2>
+      <p class="sub">You write an email, a chat message or a document. Before you send it, press one shortcut. HotkeyAI takes the text from the field you are typing in, has an AI rewrite it, and puts the better version back in the same place. No copying, no switching apps, no chat window.</p>
+      <div class="cards">
+        <div class="card"><h3>Clear, natural English</h3><p><kbd>⌥⌘E</kbd> (<kbd>Win+Alt+E</kbd>) fixes spelling, grammar and awkward phrasing. Write in another language and it translates into fluent English.</p></div>
+        <div class="card"><h3>Fixes in your own language</h3><p><kbd>⌥⇧⌘E</kbd> (<kbd>Win+Alt+Shift+E</kbd>) corrects mistakes in the language you typed and keeps your own words and tone.</p></div>
+        <div class="card"><h3>Works in any app</h3><p>Mail, Messages, Outlook, Slack, Word, Google Docs, any browser: anywhere you can type.</p></div>
+        <div class="card"><h3>Your own shortcuts</h3><p>Add actions like “make it shorter”, “make it polite” or “turn this into bullet points”, each with its own shortcut. Try a prompt on sample text before you use it.</p></div>
+        <div class="card"><h3>The AI you prefer</h3><p>On a Mac it uses Apple Intelligence by default: free, offline and private. You can also sign in with your ChatGPT account or use your own OpenAI, Claude or Gemini key.</p></div>
+        <div class="card"><h3>Stays out of the way</h3><p>A small icon in the menu bar or the taskbar. Your clipboard is put back after every rewrite.</p></div>
       </div>
       <div class="gallery">
         <figure>
