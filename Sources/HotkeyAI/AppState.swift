@@ -149,6 +149,11 @@ final class AppState {
     /// Sends `text` through the action's prompt and provider; used by hotkeys and the "Try it" box.
     func transform(_ text: String, with action: HotkeyAction) async throws -> String {
         let kind = action.provider ?? defaultProvider
+        if kind == .apple && action.webSearch {
+            // The on-device model can't search, and from memory it gets facts wrong.
+            throw AIError.notConfigured("“\(action.name)” searches the web, which Apple Intelligence can't do. "
+                + "In Settings → Actions, choose ChatGPT, OpenAI, Claude or Gemini for it, or turn off “Search the web”.")
+        }
         var model = action.model.trimmingCharacters(in: .whitespaces)
         if model.isEmpty { model = defaultModel(for: kind) }
         if model.isEmpty && kind == .chatGPT {
@@ -164,10 +169,13 @@ final class AppState {
             request = AIRequest(instructions: compact.instructions, input: compact.input,
                                 model: model, reasoningEffort: "")
         } else {
+            // Searching the web goes with deeper reasoning unless the action sets its own effort.
             request = AIRequest(instructions: DefaultPrompts.instructions(for: action),
                                 input: DefaultPrompts.userPayload(for: text),
                                 model: model,
-                                reasoningEffort: action.reasoningEffort)
+                                reasoningEffort: action.webSearch && action.reasoningEffort.isEmpty
+                                    ? "high" : action.reasoningEffort,
+                                webSearch: action.webSearch)
         }
         let result = try await provider(for: kind).complete(request)
         return kind == .apple ? DefaultPrompts.cleanAppleOutput(result, source: text, action: action) : result
@@ -212,7 +220,7 @@ final class AppState {
             return
         }
         if !accessKnown { KeyboardAccess.shared.noteEventsWork() }
-        HUD.shared.show("\(action.name)…", style: .progress)
+        HUD.shared.show(action.webSearch ? "\(action.name): searching the web…" : "\(action.name)…", style: .progress)
 
         do {
             let result = try await transform(text, with: action)

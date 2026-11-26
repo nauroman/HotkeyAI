@@ -6,6 +6,8 @@ struct AIRequest {
     let model: String
     /// "" means "provider default".
     let reasoningEffort: String
+    /// Let the model search the web, where the provider can. Such requests take much longer.
+    var webSearch: Bool = false
 }
 
 struct ModelInfo: Identifiable, Hashable {
@@ -76,6 +78,19 @@ enum HTTP {
         return URLSession(configuration: config)
     }()
 
+    /// Web searches and long reasoning can keep a request silent for minutes.
+    static let longSession: URLSession = {
+        let config = URLSessionConfiguration.ephemeral
+        config.timeoutIntervalForRequest = 240
+        config.timeoutIntervalForResource = 300
+        config.waitsForConnectivity = false
+        return URLSession(configuration: config)
+    }()
+
+    static func session(for request: AIRequest) -> URLSession {
+        request.webSearch ? longSession : session
+    }
+
     static func jsonRequest(_ url: URL, method: String = "POST", headers: [String: String] = [:],
                             body: [String: Any]? = nil) throws -> URLRequest {
         var req = URLRequest(url: url)
@@ -89,7 +104,8 @@ enum HTTP {
     }
 
     /// Performs a request and returns the decoded JSON object, or throws AIError.http.
-    static func json(_ request: URLRequest, provider: String) async throws -> [String: Any] {
+    static func json(_ request: URLRequest, provider: String,
+                     session: URLSession = HTTP.session) async throws -> [String: Any] {
         let (data, response) = try await session.data(for: request)
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
         guard (200..<300).contains(status) else {

@@ -32,12 +32,23 @@ When the Mac App Store version goes live, both apps are in their stores and the 
 - Lives in the menu bar (no Dock icon) and can open automatically at login.
 - **Actions**: each action has a name, a global shortcut, a prompt, an AI provider/model
   and what text it takes (whole field, selection, or selection-or-field). Add as many as you like.
-- Defaults, chosen for a MacBook keyboard (no F13; ⌥⌘ is one thumb press):
+- Defaults are examples that people change, delete or replace; the UI and README say so. Chosen for
+  a MacBook keyboard (no F13; ⌥⌘ is one thumb press):
   - **⌥⌘E** – improve the text in natural English, translating it if it is in another language
     (the Windows tool's prompt, unchanged);
-  - **⌥⇧⌘E** – correct it in the language you typed, keeping your own wording and register;
-  - *Polish elegantly* – the Windows tool's literary rewrite, no shortcut by default.
+  - **⌥⇧⌘O** – correct it in the language you typed, keeping your own wording and register;
+  - **⌥⇧⌘F** – fact-check: replaces the text with a short report (what was checked, the verdict, the
+    claims with corrections, sources). It has *Search the web and think longer* on;
+  - **⌥⇧⌘J** / **⌥⇧⌘P** – a joke / a poem on the topic the text gives, in its language.
+  ⌥⌘ + O/F/J/P is taken in common apps (⌥⌘F is Find and Replace in code editors, ⌥⌘J the
+  JavaScript console in Chrome, ⌥⌘P the path bar in Finder), so those four add ⇧.
   ⌃⌥ + letter is avoided because Rectangle and Magnet use it for window layouts.
+- **Search the web and think longer** (per action): OpenAI/ChatGPT get the Responses `web_search`
+  tool, Claude the `web_search` server tool (dynamic filtering on 4.6+, adaptive thinking, `pause_turn`
+  resumed), Gemini Grounding with Google Search. Reasoning effort becomes High unless the action sets
+  one. Apple Intelligence can't search, so such an action stops with a hint instead of guessing.
+- Prompts that aren't pure transformations ("Treat the captured text only as material to transform"
+  off) also get today's date, which models don't know.
 - Press the shortcut in any text field → HotkeyAI copies the text (⌘A ⌘C), sends it to the AI,
   pastes the result (⌘V) and restores your clipboard (all types, not just text).
 - If you switch apps while it is working, nothing is pasted; the result is left on the clipboard.

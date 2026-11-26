@@ -11,7 +11,7 @@
             <TextBlock Text="Welcome to HotkeyAI" FontSize="24" FontWeight="SemiBold" VerticalAlignment="Center" />
         </StackPanel>
         <TextBlock TextWrapping="Wrap" Margin="0,0,0,10">
-            Rewrite the text you are typing, in any app, with one shortcut. In any text field press:
+            Work with the text you are typing, in any app, with one shortcut. In any text field press:
         </TextBlock>
         <Grid Margin="0,0,0,12">
             <Grid.ColumnDefinitions>
@@ -21,15 +21,26 @@
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
             </Grid.RowDefinitions>
             <TextBlock Text="Win+Alt+E" FontWeight="SemiBold" Margin="0,0,0,6" />
             <TextBlock Grid.Column="1" TextWrapping="Wrap" Margin="0,0,0,6"
                        Text="improve your text in natural English (it translates other languages)" />
-            <TextBlock Grid.Row="1" Text="Win+Alt+Shift+E" FontWeight="SemiBold" />
-            <TextBlock Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" Text="correct it in the language you typed" />
+            <TextBlock Grid.Row="1" Text="Win+Alt+Shift+O" FontWeight="SemiBold" Margin="0,0,0,6" />
+            <TextBlock Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" Margin="0,0,0,6" Text="correct it in the language you typed" />
+            <TextBlock Grid.Row="2" Text="Win+Alt+Shift+F" FontWeight="SemiBold" Margin="0,0,0,6" />
+            <TextBlock Grid.Row="2" Grid.Column="1" TextWrapping="Wrap" Margin="0,0,0,6" Text="check the facts, with a web search" />
+            <TextBlock Grid.Row="3" Text="Win+Alt+Shift+J" FontWeight="SemiBold" Margin="0,0,0,6" />
+            <TextBlock Grid.Row="3" Grid.Column="1" TextWrapping="Wrap" Margin="0,0,0,6" Text="write a joke on the topic" />
+            <TextBlock Grid.Row="4" Text="Win+Alt+Shift+P" FontWeight="SemiBold" />
+            <TextBlock Grid.Row="4" Grid.Column="1" TextWrapping="Wrap" Text="write a poem on the topic" />
         </Grid>
         <TextBlock TextWrapping="Wrap" Margin="0,0,0,10"
-                   Text="HotkeyAI lives in the notification area of the taskbar (the keycap icon; it may be under ^). You can change the shortcuts and prompts, and add your own, in Settings." />
+                   Text="HotkeyAI lives in the notification area of the taskbar (the keycap icon; it may be under ^)." />
+        <TextBlock TextWrapping="Wrap" Margin="0,0,0,10"
+                   Text="These actions are just examples. In Settings you can change their prompts and shortcuts, delete them, or add your own with any prompt you like." />
         <TextBlock TextWrapping="Wrap" Margin="0,0,0,16"
                    Text="To start, connect an AI: sign in with your ChatGPT Plus or Pro account, or add an OpenAI, Claude or Gemini API key." />
         <CheckBox x:Name="StartupBox" Content="Open HotkeyAI when I sign in to Windows" Margin="0,0,0,20" />

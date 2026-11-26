@@ -10,7 +10,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>HotkeyAI for Mac and Windows</title>
-<meta name="description" content="Write in any app, press one shortcut, and HotkeyAI fixes your draft in place: clear, natural English, or your own language without the mistakes. Free for Mac and Windows.">
+<meta name="description" content="Write in any app, press one shortcut, and HotkeyAI fixes your draft in place: clear, natural English, or your own language without the mistakes. It can also check facts, write a joke or a poem, or run any prompt of your own. Free for Mac and Windows.">
 <meta property="og:title" content="HotkeyAI">
 <meta property="og:description" content="Your draft, fixed in place. One shortcut in any app, on Mac and Windows.">
 <meta property="og:image" content="https://nauroman.github.io/HotkeyAI/icon.webp">
@@ -173,7 +173,7 @@
   .sec-head { margin-bottom: var(--s7); }
   @media (max-width: 760px) { .sec { padding-block: var(--s8); } .sec-head { margin-bottom: var(--s6); } }
 
-  /* Two shortcuts */
+  /* Ready-made actions */
   .shortcut-row { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 7fr); gap: var(--s5) var(--s8);
     padding-block: var(--s6); border-top: 1px solid var(--rule); align-items: start; }
   .shortcut-row:last-child { border-bottom: 1px solid var(--rule); }
@@ -188,7 +188,8 @@
   .ex .typed { color: var(--ink-2); }
   .ex .wrote { font-size: 18px; }
   .ex .fix { color: var(--pen); text-decoration: underline 2px var(--pen); text-underline-offset: .22em; }
-  @media (max-width: 860px) { .shortcut-row { grid-template-columns: minmax(0, 1fr); } }
+  .shortcut-row.pair { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  @media (max-width: 860px) { .shortcut-row, .shortcut-row.pair { grid-template-columns: minmax(0, 1fr); } }
   @media (max-width: 520px) { .ex > div { grid-template-columns: minmax(0, 1fr); } }
 
   /* Your choice of AI */
@@ -354,8 +355,8 @@
   <section id="shortcuts" class="sec band" aria-labelledby="shortcuts-title">
     <div class="wrap">
       <div class="sec-head">
-        <h2 id="shortcuts-title">Two shortcuts, ready on day one</h2>
-        <p class="intro">Both work in any text field. HotkeyAI takes the text, sends it to the AI you chose, and puts the result back in the same place. Your clipboard is restored afterwards.</p>
+        <h2 id="shortcuts-title">Five ready-made actions</h2>
+        <p class="intro">They work in any text field. HotkeyAI takes the text, sends it to the AI you chose, and puts the result back in the same place. Your clipboard is restored afterwards. <b>The actions are only examples:</b> change their prompts and shortcuts, delete them, or <a href="#actions">add your own</a>.</p>
       </div>
       <div class="shortcut-row">
         <div class="meta">
@@ -371,14 +372,30 @@
       </div>
       <div class="shortcut-row">
         <div class="meta">
-          <span class="keys os-mac" role="img" aria-label="Option Shift Command E"><kbd>⌥</kbd><kbd>⇧</kbd><kbd>⌘</kbd><kbd>E</kbd></span>
-          <span class="keys os-win" role="img" aria-label="Windows Alt Shift E"><kbd>Win</kbd><kbd>Alt</kbd><kbd>Shift</kbd><kbd>E</kbd></span>
+          <span class="keys os-mac" role="img" aria-label="Option Shift Command O"><kbd>⌥</kbd><kbd>⇧</kbd><kbd>⌘</kbd><kbd>O</kbd></span>
+          <span class="keys os-win" role="img" aria-label="Windows Alt Shift O"><kbd>Win</kbd><kbd>Alt</kbd><kbd>Shift</kbd><kbd>O</kbd></span>
           <h3>Fix in original language</h3>
           <p>Corrects mistakes in the language you typed, and keeps your own words and tone.</p>
         </div>
         <div class="ex">
           <div><span class="who">You typed<span>Spanish</span></span><p class="typed" lang="es">mañana te envio el informe si todo sale bien</p></div>
           <div><span class="who">HotkeyAI wrote</span><p class="wrote" lang="es"><span class="fix">M</span>añana te env<span class="fix">í</span>o el informe si todo sale bien<span class="fix">.</span></p></div>
+        </div>
+      </div>
+      <div class="shortcut-row pair">
+        <div class="meta">
+          <span class="keys os-mac" role="img" aria-label="Option Shift Command F"><kbd>⌥</kbd><kbd>⇧</kbd><kbd>⌘</kbd><kbd>F</kbd></span>
+          <span class="keys os-win" role="img" aria-label="Windows Alt Shift F"><kbd>Win</kbd><kbd>Alt</kbd><kbd>Shift</kbd><kbd>F</kbd></span>
+          <h3>Fact-check</h3>
+          <p>Searches the web and replaces the text with a short report in its language: what was checked, the verdict (true, partly true, false or can't verify), the correct facts and the sources. Needs ChatGPT, OpenAI, Claude or Gemini.</p>
+        </div>
+        <div class="meta">
+          <span class="keys os-mac" role="img" aria-label="Option Shift Command J"><kbd>⌥</kbd><kbd>⇧</kbd><kbd>⌘</kbd><kbd>J</kbd></span>
+          <span class="keys os-mac" role="img" aria-label="Option Shift Command P"><kbd>⌥</kbd><kbd>⇧</kbd><kbd>⌘</kbd><kbd>P</kbd></span>
+          <span class="keys os-win" role="img" aria-label="Windows Alt Shift J"><kbd>Win</kbd><kbd>Alt</kbd><kbd>Shift</kbd><kbd>J</kbd></span>
+          <span class="keys os-win" role="img" aria-label="Windows Alt Shift P"><kbd>Win</kbd><kbd>Alt</kbd><kbd>Shift</kbd><kbd>P</kbd></span>
+          <h3>Joke or poem on this topic</h3>
+          <p>Type a topic, such as “Monday and coffee”, or a wish, such as “a birthday poem for my mom”. A joke or a rhymed poem in the same language takes its place.</p>
         </div>
       </div>
     </div>
@@ -423,7 +440,7 @@
     <div class="wrap actions-grid">
       <div>
         <h2 id="actions-title">Make your own actions</h2>
-        <p class="intro">An action is a name, a shortcut and a prompt. Add one for anything you do to text every day.</p>
+        <p class="intro">An action is a name, a shortcut and a prompt. The built-in ones are just examples: rewrite them, delete them, or add one for anything you do to text every day.</p>
         <ul class="prompts" aria-label="Examples of actions you can add">
           <li>Make it shorter</li>
           <li>Make it polite</li>
@@ -433,6 +450,7 @@
         <ul class="points">
           <li><b>Choose what it works on:</b> the whole field, the selected text, or the selection when there is one.</li>
           <li><b>Choose its AI and model,</b> separately from your other actions.</li>
+          <li><b>Let it search the web</b> and think longer, with ChatGPT, OpenAI, Claude or Gemini.</li>
           <li><b>Try the prompt first</b> on sample text in Settings, then use it anywhere.</li>
         </ul>
       </div>
@@ -611,7 +629,7 @@
     { action: "Improve in English", subject: "Friday", lang: "ru", mac: ["⌥", "⌘", "E"], win: ["Win", "Alt", "E"], shift: false,
       label: "Press to turn it into English", note: "Translated from Russian into English",
       parts: [["я не обещал закончить к пятнице", "I did not promise to finish by Friday."]] },
-    { action: "Fix in original language", subject: "Informe", lang: "es", mac: ["⌥", "⇧", "⌘", "E"], win: ["Win", "Alt", "Shift", "E"], shift: true,
+    { action: "Fix in original language", subject: "Informe", lang: "es", mac: ["⌥", "⇧", "⌘", "O"], win: ["Win", "Alt", "Shift", "O"], shift: true,
       label: "Press to fix it in Spanish",
       parts: [["m", "M"], "añana te ", ["envio", "envío"], " el informe si todo sale bien", ["", "."]] }
   ];
@@ -683,16 +701,17 @@
   }
 
   press.addEventListener("click", function () { stopTour(); rewrite(); });
-  // On a Mac the real shortcut works on the page too: ⌥⌘E, or ⌥⇧⌘E for the Spanish draft.
+  // On a Mac the real shortcut works on the page too: ⌥⌘E, or ⌥⇧⌘O for the Spanish draft.
   document.addEventListener("keydown", function (e) {
     var t = e.target;
     if (t && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) return;
-    if (!(e.altKey && e.metaKey && e.code === "KeyE")) return;
+    if (!(e.altKey && e.metaKey && (e.code === "KeyE" || e.code === "KeyO"))) return;
     e.preventDefault();
     stopTour();
     if (busy) return;
     if (state === "done") next();
-    if (e.shiftKey === examples[index].shift) rewrite();
+    var shift = examples[index].shift;
+    if (e.shiftKey === shift && e.code === (shift ? "KeyO" : "KeyE")) rewrite();
   });
 
   // Without a click, the first draft fixes itself once after a moment, so everyone sees it.

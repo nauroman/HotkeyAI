@@ -20,15 +20,30 @@ import AppKit
         #expect(DefaultPrompts.instructions(for: action).hasSuffix(DefaultPrompts.lightSourceRule))
     }
 
+    @Test func onlyOpenEndedPromptsGetTodaysDate() throws {
+        let day = try #require(Calendar(identifier: .gregorian).date(from: DateComponents(year: 2026, month: 3, day: 7)))
+        var action = HotkeyAction(name: "x", prompt: "Do it.", shortcut: nil)
+        #expect(!DefaultPrompts.instructions(for: action, today: day).contains("2026"))
+        action.strictTransform = false
+        #expect(DefaultPrompts.instructions(for: action, today: day).contains("Today's date is 2026-03-07."))
+    }
+
     @Test func defaultActionsUseMacBookFriendlyShortcuts() {
         let actions = DefaultPrompts.defaultActions
-        #expect(actions.count == 3)
+        #expect(actions.map(\.shortcut?.displayString) == ["⌥⌘E", "⌥⇧⌘O", "⌥⇧⌘F", "⌥⇧⌘J", "⌥⇧⌘P"])
+        #expect(Set(actions.compactMap(\.shortcut)).count == actions.count)
         #expect(actions[0].prompt.contains("American English"))
-        #expect(actions[0].shortcut?.displayString == "⌥⌘E")
         #expect(actions[1].prompt.contains("Keep the author's own voice"))
-        #expect(actions[1].shortcut?.displayString == "⌥⇧⌘E")
-        #expect(actions[2].prompt.contains("rich vocabulary"))
-        #expect(actions[2].shortcut == nil)
+        #expect(actions[2].prompt.contains("Fact-check"))
+        #expect(actions[3].prompt.contains("joke"))
+        #expect(actions[4].prompt.contains("poem"))
+    }
+
+    @Test func onlyFactCheckSearchesTheWeb() {
+        let actions = DefaultPrompts.defaultActions
+        #expect(actions.map(\.webSearch) == [false, false, true, false, false])
+        // Transformations guard against instructions in the text; the others treat it as a topic.
+        #expect(actions.map(\.strictTransform) == [true, true, false, false, false])
     }
 }
 
@@ -48,13 +63,15 @@ import AppKit
         #expect(actions.first?.name == "Old")
         #expect(actions.first?.captureMode == .all)
         #expect(actions.first?.strictTransform == true)
+        #expect(actions.first?.webSearch == false)
         #expect(actions.first?.enabled == true)
     }
 
     @Test func actionRoundTrips() throws {
         let action = HotkeyAction(name: "A", prompt: "B",
                                   shortcut: KeyCombo(keyCode: 17, modifiers: UInt32(controlKey)),
-                                  provider: .anthropic, model: "claude-haiku-5-5", captureMode: .selection)
+                                  provider: .anthropic, model: "claude-haiku-5-5", captureMode: .selection,
+                                  webSearch: true)
         let data = try JSONEncoder().encode(action)
         #expect(try JSONDecoder().decode(HotkeyAction.self, from: data) == action)
     }
@@ -78,6 +95,18 @@ import AppKit
         #expect(out == "Hello, world.")
     }
 
+    @Test func onlyTheLastMessageIsTheAnswer() throws {
+        let out = try feed([
+            #"data: {"type":"response.output_item.added","item":{"type":"message"}}"#,
+            #"data: {"type":"response.output_text.delta","delta":"Let me search."}"#,
+            #"data: {"type":"response.output_item.added","item":{"type":"web_search_call"}}"#,
+            #"data: {"type":"response.output_item.added","item":{"type":"message"}}"#,
+            #"data: {"type":"response.output_text.delta","delta":"Answer"}"#,
+            #"data: {"type":"response.completed","response":{"status":"completed"}}"#,
+        ])
+        #expect(out == "Answer")
+    }
+
     @Test func streamWithoutCompletedIsRejected() {
         #expect(throws: AIError.self) {
             try feed([#"data: {"type":"response.output_text.delta","delta":"partial"}"#])
@@ -99,6 +128,28 @@ import AppKit
         #expect(try AnthropicProvider.parse(ok) == "Done.")
         #expect(throws: AIError.self) { try AnthropicProvider.parse(["stop_reason": "refusal", "content": []]) }
         #expect(throws: AIError.self) { try AnthropicProvider.parse(["stop_reason": "max_tokens", "content": [["type": "text", "text": "cut"]]]) }
+    }
+
+    @Test func anthropicWebSearchAnswerFollowsTheLastSearch() throws {
+        let cited: [String: Any] = ["type": "text", "text": "built in 1889.",
+                                    "citations": [["type": "web_search_result_location", "url": "https://example.org/eiffel"]]]
+        var obj: [String: Any] = ["stop_reason": "end_turn", "content": [
+            ["type": "text", "text": "Let me check."],
+            ["type": "server_tool_use", "name": "web_search"],
+            ["type": "web_search_tool_result", "content": []],
+            ["type": "text", "text": "The tower was "], cited,
+        ]]
+        #expect(try AnthropicProvider.parse(obj) == "The tower was built in 1889.\n\nhttps://example.org/eiffel")
+        // Sources the answer already lists are not added again.
+        obj["content"] = [["type": "text", "text": "See https://example.org/eiffel"], cited]
+        #expect(try AnthropicProvider.parse(obj) == "See https://example.org/eiffelbuilt in 1889.")
+    }
+
+    @Test func anthropicSearchToolMatchesTheModel() {
+        #expect(AnthropicProvider.webSearchTool(for: "claude-opus-5-5")["type"] as? String == "web_search_20260209")
+        #expect(AnthropicProvider.webSearchTool(for: "claude-haiku-4-5-20251001")["type"] as? String == "web_search_20250305")
+        #expect(AnthropicProvider.supportsAdaptiveThinking("claude-sonnet-5-5"))
+        #expect(!AnthropicProvider.supportsAdaptiveThinking("claude-sonnet-4-5-20250929"))
     }
 
     @Test func geminiSkipsThoughtParts() throws {
@@ -172,6 +223,14 @@ import AppKit
         #expect(request.input == "Correct this text:\n\"\"\"\nhola\n\"\"\"")
     }
 
+    @Test func topicActionsNameTheReplyLanguage() {
+        let joke = DefaultPrompts.defaultActions[3]
+        let request = DefaultPrompts.appleRequest(for: joke, text: "понедельник и кофе")
+        #expect(request.instructions == DefaultPrompts.compactJoke + " Write your reply in Russian.")
+        #expect(request.input == "Topic:\n\"\"\"\nпонедельник и кофе\n\"\"\"")
+        #expect(DefaultPrompts.replyLanguage(for: "el lunes y el café, por favor") == " Write your reply in Spanish.")
+    }
+
     @Test func customPromptKeepsGuardOnlyWhenStrict() {
         var action = HotkeyAction(name: "Reply", prompt: "Reply politely.", shortcut: nil)
         #expect(DefaultPrompts.appleRequest(for: action, text: "x").instructions.contains("Never answer"))
@@ -184,6 +243,7 @@ import AppKit
         #expect(DefaultPrompts.cleanAppleOutput("\"hola amigo\"", source: "hola amigo", action: actions[1]) == "Hola amigo")
         #expect(DefaultPrompts.cleanAppleOutput("\"\"\"\nHi there\n\"\"\"", source: "hi there", action: actions[0]) == "Hi there")
         #expect(DefaultPrompts.cleanAppleOutput("\"quoted\"", source: "\"quoted\"", action: actions[1]) == "\"quoted\"")
+        #expect(DefaultPrompts.cleanAppleOutput("A **bold** end", source: "topic", action: actions[3]) == "A bold end")
     }
 }
 

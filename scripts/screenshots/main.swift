@@ -11,7 +11,7 @@ let captions: [(file: String, title: String, subtitle: String)] = [
     ("1-improve-in-english", "Better English with one shortcut",
      "Press ⌥⌘E in any app to fix or translate what you typed."),
     ("2-fix-in-your-language", "Fix text in any language",
-     "⌥⇧⌘E corrects spelling and grammar but keeps your words."),
+     "⌥⇧⌘O corrects spelling and grammar but keeps your words."),
     ("3-ai-providers", "Private by default",
      "Apple Intelligence on your Mac, or your ChatGPT, Claude or Gemini account."),
 ]

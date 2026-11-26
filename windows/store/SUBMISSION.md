@@ -61,18 +61,22 @@ Upload the `.msixbundle`. Device families: Desktop only.
 HotkeyAI
 
 **Short description** (≤ 270)
-Rewrite the text you are typing, in any app, with one shortcut: turn a draft into clear, natural English, or fix grammar and spelling in your own language.
+One shortcut in any app: turn a draft into clear, natural English, fix it in your own language, check its facts, or get a joke or a poem on its topic. The actions are examples: change them or add your own prompts.
 
 **Description** (≤ 10000)
 HotkeyAI improves the text you are typing without leaving the app you are in. Press a shortcut in any text field — Outlook, Teams, Slack, Word, a browser — and HotkeyAI replaces your draft with a clearer version.
 
-TWO ACTIONS, READY TO GO
+FIVE ACTIONS TO START WITH
 • Win+Alt+E — Improve in English: translates from any language into natural, fluent English, or polishes text that is already in English.
-• Win+Alt+Shift+E — Fix in your language: corrects spelling, grammar and punctuation while keeping your own words and tone.
+• Win+Alt+Shift+O — Fix in your language: corrects spelling, grammar and punctuation while keeping your own words and tone.
+• Win+Alt+Shift+F — Fact-check: searches the web and replaces the text with a short report: what was checked, true or false, the correct facts and the sources.
+• Win+Alt+Shift+J — Joke on this topic: type a topic and get a short joke in the same language.
+• Win+Alt+Shift+P — Poem on this topic: type a topic or a wish ("a birthday poem for my mom") and get a rhymed poem.
 
-MAKE IT YOURS
-• Add your own actions, each with a name, a shortcut and a prompt: "make it shorter", "make it polite", "turn this into bullet points".
+THEY ARE ONLY EXAMPLES
+• Change any action's prompt, shortcut and AI, delete the ones you don't need, or add your own: "make it shorter", "make it polite", "reply to this email", "explain this code".
 • Choose what each action works on: the whole field, the selection, or the selection when there is one.
+• Let any action search the web and think longer.
 • Try any prompt in Settings before you use it.
 
 YOUR AI, YOUR ACCOUNT
@@ -89,12 +93,14 @@ HotkeyAI presses Ctrl+A, Ctrl+C and Ctrl+V for you, only in the field you are ty
 An AI provider is required: a ChatGPT Plus or Pro plan, or an API key from OpenAI, Anthropic or Google (Google AI Studio offers free keys with a daily limit). HotkeyAI is open source: github.com/nauroman/HotkeyAI
 
 **What's new in this version**
-Settings → General → About now links to the HotkeyAI website, next to the privacy policy, the source code and Report a problem.
+New built-in actions: Fact-check (Win+Alt+Shift+F), Joke on this topic (Win+Alt+Shift+J) and Poem on this topic (Win+Alt+Shift+P). Fix in your language moves to Win+Alt+Shift+O. Any action can now search the web and think longer. The built-in actions are only examples: change them or add your own in Settings → Actions. Already using HotkeyAI? Choose More → Add built-in actions again there to get the new ones.
 
 **Product features** (≤ 20, each ≤ 200)
 - Win+Alt+E turns your draft into clear, natural English, translating from any language
-- Win+Alt+Shift+E fixes spelling, grammar and punctuation in the language you typed
-- Your own actions with their own shortcuts and prompts
+- Win+Alt+Shift+O fixes spelling, grammar and punctuation in the language you typed
+- Win+Alt+Shift+F checks the facts with a web search; Win+Alt+Shift+J and P write a joke or a poem on the topic
+- The built-in actions are examples: change them, or add your own with any prompt
+- Any action can search the web and think longer
 - Works on the whole field, the selection, or the selection when there is one
 - Sign in with ChatGPT, or use an OpenAI, Claude or Gemini API key
 - Restores your clipboard after every action
@@ -130,7 +136,7 @@ How to test:
 1. Launch HotkeyAI from Start. A welcome window explains the shortcuts. The "Open HotkeyAI when I sign in to Windows" box is unticked by default; the startup task is only enabled if the user ticks it (or turns it on in Settings → General).
 2. HotkeyAI needs an AI provider. Use the Google Gemini test API key from the Credentials section of this page: in Settings > AI Providers, paste it under "Google Gemini", press Save, then set "Default provider" at the top of that page to "Gemini (Google API key)". ("Sign in with ChatGPT" also works with any ChatGPT Plus or Pro account.)
 3. In Settings → Actions, choose "Improve in English" and press "Run on this text" in the Try it box. The Russian sample is translated into English.
-4. Open Notepad, type "we has two ideas and i thinks they is good", and press Win+Alt+E. The text is replaced with corrected English and a banner above the taskbar says "Done". Win+Alt+Shift+E corrects text in its own language.
+4. Open Notepad, type "we has two ideas and i thinks they is good", and press Win+Alt+E. The text is replaced with corrected English and a banner above the taskbar says "Done". Win+Alt+Shift+O corrects text in its own language; Win+Alt+Shift+F replaces it with a fact-check (it searches the web, so it takes longer).
 5. The keycap icon in the notification area (it may be under ^) opens Settings with a left click; a right click shows the actions, Settings, About HotkeyAI… (opens https://nauroman.github.io/HotkeyAI/ in the default browser) and Quit.
 
 Restricted capability runFullTrust: HotkeyAI is a Win32 desktop app. Full trust is used only to (a) register the user's global shortcuts with RegisterHotKey, (b) send Ctrl+A, Ctrl+C and Ctrl+V with SendInput to the focused window after the user presses one of those shortcuts, (c) read and restore the clipboard around that copy and paste, and (d) show a notification-area icon. It runs at the user's normal privilege level, does not install drivers or services, does not use a keyboard hook, does not read the screen and does not record typing.

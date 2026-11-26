@@ -35,6 +35,8 @@
                     </Button.ContextMenu>
                 </Button>
             </StackPanel>
+            <TextBlock DockPanel.Dock="Bottom" Style="{StaticResource Caption}" Margin="2,8,0,0" TextWrapping="Wrap"
+                       Text="These actions are just examples. Change their prompts, shortcuts and AI, delete them, or press + to add your own." />
             <ListBox x:Name="List" SelectionChanged="List_SelectionChanged"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                 <ListBox.ItemTemplate>
@@ -142,6 +144,10 @@
                             <ComboBox Grid.Column="1" ItemsSource="{Binding EffortChoices}" DisplayMemberPath="Title"
                                       SelectedValuePath="Value" SelectedValue="{Binding Action.ReasoningEffort}" />
                         </Grid>
+                        <CheckBox Margin="0,12,0,0" IsChecked="{Binding Action.WebSearch}"
+                                  Content="Search the web and think longer" />
+                        <TextBlock Style="{StaticResource Caption}"
+                                   Text="Before answering, the AI looks things up on the web and thinks longer (High reasoning effort unless you choose one above). Slower, and uses more of your plan or API credit." />
                     </StackPanel>
                 </Border>
 
@@ -151,6 +157,8 @@
                         <TextBox Text="{Binding Action.Prompt, UpdateSourceTrigger=PropertyChanged}" AcceptsReturn="True"
                                  TextWrapping="Wrap" MinHeight="180" MaxHeight="360" VerticalScrollBarVisibility="Auto"
                                  VerticalContentAlignment="Top" />
+                        <TextBlock Style="{StaticResource Caption}"
+                                   Text="Write any instruction you like: summarize, reply to an email, explain code, translate into German… The text you captured is sent along with it." />
                         <CheckBox Margin="0,10,0,0" IsChecked="{Binding Action.StrictTransform}"
                                   Content="Treat the captured text only as material to transform" />
                         <TextBlock Style="{StaticResource Caption}"

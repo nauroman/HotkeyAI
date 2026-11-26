@@ -20,12 +20,17 @@ public sealed class AnthropicProvider(string apiKey) : IAIProvider
         var body = new JsonObject
         {
             ["model"] = request.Model,
-            ["max_tokens"] = 16000,
+            ["max_tokens"] = request.WebSearch ? 32000 : 16000,
             ["system"] = request.Instructions,
-            ["messages"] = new JsonArray(new JsonObject { ["role"] = "user", ["content"] = request.Input }),
+            ["messages"] = UserMessages(request.Input),
         };
         if (SupportsEffort(request.Model))
             body["output_config"] = new JsonObject { ["effort"] = Effort(request.ReasoningEffort) };
+        if (request.WebSearch)
+        {
+            body["tools"] = new JsonArray(WebSearchTool(request.Model));
+            if (SupportsAdaptiveThinking(request.Model)) body["thinking"] = new JsonObject { ["type"] = "adaptive" };
+        }
         var headers = Headers();
         if (FallbackModels.Contains(request.Model))
         {
@@ -33,9 +38,23 @@ public sealed class AnthropicProvider(string apiKey) : IAIProvider
             headers["anthropic-beta"] = "server-side-fallback-2026-07-01";
             body["fallbacks"] = "default";
         }
-        using var req = Http.JsonRequest(HttpMethod.Post, BaseUrl + "/messages", headers, body);
-        return Parse(await Http.JsonAsync(req, "Claude", ct));
+        // A long search turn can pause; sending the paused turn back lets the server go on.
+        var paused = new JsonArray();
+        for (var attempt = 0; attempt < 4; attempt++)
+        {
+            using var req = Http.JsonRequest(HttpMethod.Post, BaseUrl + "/messages", headers, body);
+            var obj = await Http.JsonAsync(req, "Claude", ct, Http.ClientFor(request));
+            if (Http.Str(obj["stop_reason"]) != "pause_turn") return Parse(obj);
+            foreach (var block in obj["content"] as JsonArray ?? []) paused.Add(block?.DeepClone());
+            var messages = UserMessages(request.Input);
+            messages.Add(new JsonObject { ["role"] = "assistant", ["content"] = paused.DeepClone() });
+            body["messages"] = messages;
+        }
+        throw AIException.Incomplete("the web search took too long");
     }
+
+    private static JsonArray UserMessages(string input) =>
+        new(new JsonObject { ["role"] = "user", ["content"] = input });
 
     public static string Parse(JsonObject obj)
     {
@@ -46,12 +65,38 @@ public sealed class AnthropicProvider(string apiKey) : IAIProvider
             case "max_tokens": throw AIException.Incomplete("output limit reached");
             case var other: throw AIException.Incomplete(other);
         }
-        var text = string.Concat((obj["content"] as JsonArray ?? [])
-                .Where(block => Http.Str(block?["type"]) == "text")
-                .Select(block => Http.Str(block?["text"])))
-            .Trim();
+        var blocks = (obj["content"] as JsonArray ?? []).OfType<JsonObject>().ToList();
+        // With web search, text before the last search is commentary ("Let me check…");
+        // the answer comes after it.
+        string[] notAnswer = ["text", "thinking", "redacted_thinking"];
+        var start = blocks.FindLastIndex(b => !notAnswer.Contains(Http.Str(b["type"]) ?? "")) + 1;
+        var answer = blocks.Skip(start).Where(b => Http.Str(b["type"]) == "text").ToList();
+        var text = string.Concat(answer.Select(b => Http.Str(b["text"]))).Trim();
         if (text.Length == 0) throw AIException.Empty();
+        // Answers built on web search must show their sources; add them if the text has none.
+        var sources = answer
+            .SelectMany(b => (b["citations"] as JsonArray ?? []).Select(c => Http.Str(c?["url"])))
+            .OfType<string>()
+            .Distinct()
+            .ToList();
+        if (sources.Count > 0 && !sources.Any(text.Contains))
+            return text + "\n\n" + string.Join("\n", sources.Take(3));
         return text;
+    }
+
+    /// Dynamic filtering (fewer tokens per search) needs Claude 4.6 or later.
+    public static JsonObject WebSearchTool(string model)
+    {
+        string[] filtering = ["fable", "mythos", "opus-5", "opus-4-8", "opus-4-7", "opus-4-6", "sonnet-5", "sonnet-4-6"];
+        var type = filtering.Any(model.Contains) ? "web_search_20260209" : "web_search_20250305";
+        return new JsonObject { ["type"] = type, ["name"] = "web_search", ["max_uses"] = 8 };
+    }
+
+    /// Models that take `thinking: {type: "adaptive"}`. Opus 4.7 and 4.8 don't think without it.
+    public static bool SupportsAdaptiveThinking(string model)
+    {
+        string[] adaptive = ["fable", "mythos", "opus-5", "opus-4-8", "opus-4-7", "opus-4-6", "sonnet-5", "sonnet-4-6", "haiku-5"];
+        return adaptive.Any(model.Contains);
     }
 
     public async Task<IReadOnlyList<ModelInfo>> ListModelsAsync(CancellationToken ct = default)
