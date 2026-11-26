@@ -181,8 +181,10 @@ public class TrayMenuTests
     {
         var actions = DefaultPrompts.DefaultActions();
         actions[2].Name = "Q&A";
+        actions[2].Shortcut = null;
         var items = TrayMenu.Build(actions, runningActionName: null);
         Assert.Equal(new TrayMenuItem(TrayMenu.FirstAction, "Improve in English\tWin+Alt+E"), items[0]);
+        Assert.Equal(new TrayMenuItem(TrayMenu.FirstAction + 1, "Fix in original language\tWin+Alt+Shift+O"), items[1]);
         Assert.Equal(new TrayMenuItem(TrayMenu.FirstAction + 2, "Q&&A"), items[2]);
         Assert.Single(items, i => i.IsDefault && i.Command == TrayMenu.Settings);
     }
