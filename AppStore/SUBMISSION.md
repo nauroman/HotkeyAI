@@ -113,7 +113,15 @@ AI processing: by default HotkeyAI uses Apple Intelligence on-device (Foundation
 
 Use of the Accessibility permission: HotkeyAI only posts the keystrokes Command-A, Command-C and Command-V with CGEvent.post (the sandbox-compatible "post event" privilege) to the focused field, and only after the user presses one of their shortcuts. It does not use the Accessibility (AXUIElement) API, does not read the screen and does not monitor typing; shortcuts are registered with RegisterEventHotKey.
 
-Network: the app is sandboxed with network.client (AI APIs) and network.server, which is used only for a temporary listener on 127.0.0.1 that receives the "Sign in with ChatGPT" OAuth redirect.
+Network: the app is sandboxed with network.client (AI APIs) and network.server, which is used only for a temporary listener on 127.0.0.1 that receives the "Sign in with ChatGPT" OAuth redirect. The listener (NWListener, loopback interface only, http://127.0.0.1:1455/auth/callback) starts when the user clicks "Sign in with ChatGPT…" in Settings… → AI Providers, and closes after the single redirect, on cancel or on timeout. It never accepts connections from other machines.
+```
+
+**App Sandbox Information** (same page, below the notes): `com.apple.security.network.server` with this
+usage information. Build 1.0 (2) was rejected on 2026-11-25 by an automated check that saw this
+entitlement but no matching feature; 1.0 (3) was resubmitted with this entry and a reply to App Review.
+
+```
+Used only for "Sign in with ChatGPT" (OpenAI OAuth 2.0 + PKCE). When the user clicks "Sign in with ChatGPT…" in Settings… → AI Providers, the app starts a one-shot NWListener bound to the loopback interface (http://127.0.0.1:1455/auth/callback) to receive the OAuth redirect from the browser. It closes after that single request, on cancel or on timeout, and never accepts connections from other machines.
 ```
 
 ## App Privacy (App Store Connect → App Privacy)
