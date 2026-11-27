@@ -13,6 +13,8 @@ public sealed class SettingsData
     [JsonPropertyName("providerModels")] public Dictionary<string, string> ProviderModels { get; set; } = [];
     [JsonPropertyName("showHUD")] public bool ShowHud { get; set; } = true;
     [JsonPropertyName("onboarded")] public bool Onboarded { get; set; }
+    /// Keys of the built-in actions the saved actions have been given (DefaultPrompts.BuiltInKeys).
+    [JsonPropertyName("builtInsGiven")] public List<string>? BuiltInsGiven { get; set; }
     /// Small non-secret values, e.g. the ChatGPT client registration ID.
     [JsonPropertyName("values")] public Dictionary<string, string> Values { get; set; } = [];
 }

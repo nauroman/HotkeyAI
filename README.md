@@ -44,9 +44,9 @@ version back in the same place. You don't copy anything, switch apps or open a c
 - Every action is just a prompt with a shortcut. Change the built-in ones or add your own:
   "make it shorter", "make it polite", "turn this into bullet points", "reply to this email".
 
-## Five ready-made actions
+## Six ready-made actions
 
-HotkeyAI starts with five actions so you can try it right away. **They are only examples.** In
+HotkeyAI starts with six actions so you can try it right away. **They are only examples.** In
 Settings → Actions you can change the prompt, the shortcut and the AI of any of them, delete the ones
 you don't need, and press **+** to add your own with any prompt you like.
 
@@ -54,6 +54,7 @@ you don't need, and press **+** to add your own with any prompt you like.
 | --- | --- | --- | --- |
 | Improve in English | <kbd>⌥</kbd> <kbd>⌘</kbd> <kbd>E</kbd> | <kbd>Win</kbd> <kbd>Alt</kbd> <kbd>E</kbd> | Fixes mistakes and translates other languages into natural English |
 | Fix in original language | <kbd>⌥</kbd> <kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>O</kbd> | <kbd>Win</kbd> <kbd>Alt</kbd> <kbd>Shift</kbd> <kbd>O</kbd> | Corrects mistakes in the language you typed |
+| Do what the text says | <kbd>⌥</kbd> <kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>D</kbd> | <kbd>Win</kbd> <kbd>Alt</kbd> <kbd>Shift</kbd> <kbd>D</kbd> | Carries out the request you typed and puts the result in its place |
 | Fact-check | <kbd>⌥</kbd> <kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>F</kbd> | <kbd>Win</kbd> <kbd>Alt</kbd> <kbd>Shift</kbd> <kbd>F</kbd> | Searches the web and says whether the claims are true |
 | Joke on this topic | <kbd>⌥</kbd> <kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>J</kbd> | <kbd>Win</kbd> <kbd>Alt</kbd> <kbd>Shift</kbd> <kbd>J</kbd> | Writes a short joke about what you typed |
 | Poem on this topic | <kbd>⌥</kbd> <kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>P</kbd> | <kbd>Win</kbd> <kbd>Alt</kbd> <kbd>Shift</kbd> <kbd>P</kbd> | Writes a rhymed poem about what you typed |
@@ -78,6 +79,19 @@ Corrects mistakes in the language you typed, and keeps your own words and tone.
 | You type | HotkeyAI writes |
 | --- | --- |
 | mañana te envio el informe si todo sale bien | Mañana te envío el informe si todo sale bien. |
+
+### Do what the text says: <kbd>⌥</kbd> <kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>D</kbd> on a Mac, <kbd>Win</kbd> <kbd>Alt</kbd> <kbd>Shift</kbd> <kbd>D</kbd> on Windows
+
+Type what you want instead of writing it yourself, and press the shortcut. The result takes the place
+of your request. Select the request to replace only it, for example in a reply below a quoted email.
+
+| You type | HotkeyAI writes |
+| --- | --- |
+| tell the team the meeting moves to Friday at 3 pm | Hi everyone, the meeting is moving to Friday at 3 pm. See you then! |
+| command to find files larger than 100 MB | find . -type f -size +100M |
+
+It works best with ChatGPT, OpenAI, Claude or Gemini. Apple Intelligence runs a small model on your
+Mac: it writes short messages well enough, but can get numbers, facts and translations wrong.
 
 ### Fact-check: <kbd>⌥</kbd> <kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>F</kbd> on a Mac, <kbd>Win</kbd> <kbd>Alt</kbd> <kbd>Shift</kbd> <kbd>F</kbd> on Windows
 

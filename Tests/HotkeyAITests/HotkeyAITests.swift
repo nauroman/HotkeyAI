@@ -30,20 +30,63 @@ import AppKit
 
     @Test func defaultActionsUseMacBookFriendlyShortcuts() {
         let actions = DefaultPrompts.defaultActions
-        #expect(actions.map(\.shortcut?.displayString) == ["⌥⌘E", "⌥⇧⌘O", "⌥⇧⌘F", "⌥⇧⌘J", "⌥⇧⌘P"])
+        #expect(actions.map(\.shortcut?.displayString) == ["⌥⌘E", "⌥⇧⌘O", "⌥⇧⌘D", "⌥⇧⌘F", "⌥⇧⌘J", "⌥⇧⌘P"])
         #expect(Set(actions.compactMap(\.shortcut)).count == actions.count)
         #expect(actions[0].prompt.contains("American English"))
         #expect(actions[1].prompt.contains("Keep the author's own voice"))
-        #expect(actions[2].prompt.contains("Fact-check"))
-        #expect(actions[3].prompt.contains("joke"))
-        #expect(actions[4].prompt.contains("poem"))
+        #expect(actions[2].prompt.contains("Do what the source text asks"))
+        #expect(actions[3].prompt.contains("Fact-check"))
+        #expect(actions[4].prompt.contains("joke"))
+        #expect(actions[5].prompt.contains("poem"))
     }
 
     @Test func onlyFactCheckSearchesTheWeb() {
         let actions = DefaultPrompts.defaultActions
-        #expect(actions.map(\.webSearch) == [false, false, true, false, false])
-        // Transformations guard against instructions in the text; the others treat it as a topic.
-        #expect(actions.map(\.strictTransform) == [true, true, false, false, false])
+        #expect(actions.map(\.webSearch) == [false, false, false, true, false, false])
+        // Transformations guard against instructions in the text; the others carry out a request
+        // or treat the text as a topic.
+        #expect(actions.map(\.strictTransform) == [true, true, false, false, false, false])
+    }
+
+    @Test func doTakesTheSelectionFirst() {
+        let action = DefaultPrompts.defaultActions[2]
+        #expect(action.name == "Do what the text says")
+        #expect(action.captureMode == .selectionOrAll)
+        #expect(DefaultPrompts.instructions(for: action).hasSuffix(DefaultPrompts.lightSourceRule))
+    }
+}
+
+@Suite struct BuiltInUpdateTests {
+    private func names(_ actions: [HotkeyAction]) -> [String] { actions.map(\.name) }
+
+    @Test func settingsFromTheFirstVersionGetTheNewActions() {
+        // Saved by 1.0: the user edited English, kept Fix on ⌥⇧⌘E and had Polish elegantly.
+        var english = DefaultPrompts.defaultActions[0]
+        english.prompt = "My own English prompt"
+        var fix = DefaultPrompts.defaultActions[1]
+        fix.shortcut = KeyCombo(keyCode: UInt32(kVK_ANSI_E), modifiers: UInt32(cmdKey | optionKey | shiftKey))
+        let polish = HotkeyAction(name: "Polish elegantly", prompt: "Polish it.", shortcut: nil)
+        var actions = [english, fix, polish]
+        let given = DefaultPrompts.addNewBuiltIns(to: &actions, given: DefaultPrompts.firstBuiltInKeys)
+        #expect(names(actions) == ["Improve in English", "Fix in original language", "Polish elegantly",
+                                   "Do what the text says", "Fact-check", "Joke on this topic", "Poem on this topic"])
+        #expect(actions[3].shortcut == DefaultPrompts.doShortcut)
+        #expect(given == Set(DefaultPrompts.builtIns.map(\.key)))
+    }
+
+    @Test func deletedActionsStayDeleted() {
+        var actions = [DefaultPrompts.defaultActions[0]]
+        _ = DefaultPrompts.addNewBuiltIns(to: &actions, given: Set(DefaultPrompts.builtIns.map(\.key)))
+        #expect(names(actions) == ["Improve in English"])
+    }
+
+    @Test func newActionLeavesATakenShortcutEmptyAndSkipsAPromptThatIsThere() {
+        var mine = HotkeyAction(name: "Mine", prompt: "Mine.", shortcut: DefaultPrompts.doShortcut)
+        mine.enabled = false
+        var actions = [mine, DefaultPrompts.defaultActions[4]]
+        _ = DefaultPrompts.addNewBuiltIns(to: &actions, given: ["english", "fix", "factCheck", "poem"])
+        #expect(names(actions) == ["Mine", "Joke on this topic", "Do what the text says"])
+        #expect(actions[2].shortcut == nil)
     }
 }
 
@@ -224,11 +267,19 @@ import AppKit
     }
 
     @Test func topicActionsNameTheReplyLanguage() {
-        let joke = DefaultPrompts.defaultActions[3]
+        let joke = DefaultPrompts.defaultActions[4]
         let request = DefaultPrompts.appleRequest(for: joke, text: "понедельник и кофе")
         #expect(request.instructions == DefaultPrompts.compactJoke + " Write your reply in Russian.")
         #expect(request.input == "Topic:\n\"\"\"\nпонедельник и кофе\n\"\"\"")
         #expect(DefaultPrompts.replyLanguage(for: "el lunes y el café, por favor") == " Write your reply in Spanish.")
+    }
+
+    @Test func doQuotesTheRequestAndAllowsAnotherLanguage() {
+        let request = DefaultPrompts.appleRequest(for: DefaultPrompts.defaultActions[2],
+                                                  text: "напиши коллеге, что встреча переносится на пятницу")
+        #expect(request.instructions.hasPrefix(DefaultPrompts.compactDo + " Write your reply in Russian."))
+        #expect(request.instructions.hasSuffix("If the request asks for another language, write in that one."))
+        #expect(request.input.hasPrefix("Request:\n\"\"\"\n"))
     }
 
     @Test func customPromptKeepsGuardOnlyWhenStrict() {
@@ -243,7 +294,7 @@ import AppKit
         #expect(DefaultPrompts.cleanAppleOutput("\"hola amigo\"", source: "hola amigo", action: actions[1]) == "Hola amigo")
         #expect(DefaultPrompts.cleanAppleOutput("\"\"\"\nHi there\n\"\"\"", source: "hi there", action: actions[0]) == "Hi there")
         #expect(DefaultPrompts.cleanAppleOutput("\"quoted\"", source: "\"quoted\"", action: actions[1]) == "\"quoted\"")
-        #expect(DefaultPrompts.cleanAppleOutput("A **bold** end", source: "topic", action: actions[3]) == "A bold end")
+        #expect(DefaultPrompts.cleanAppleOutput("A **bold** end", source: "topic", action: actions[4]) == "A bold end")
     }
 }
 

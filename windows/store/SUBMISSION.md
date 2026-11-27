@@ -66,9 +66,10 @@ One shortcut in any app: turn a draft into clear, natural English, fix it in you
 **Description** (≤ 10000)
 HotkeyAI improves the text you are typing without leaving the app you are in. Press a shortcut in any text field — Outlook, Teams, Slack, Word, a browser — and HotkeyAI replaces your draft with a clearer version.
 
-FIVE ACTIONS TO START WITH
+SIX ACTIONS TO START WITH
 • Win+Alt+E — Improve in English: translates from any language into natural, fluent English, or polishes text that is already in English.
 • Win+Alt+Shift+O — Fix in your language: corrects spelling, grammar and punctuation while keeping your own words and tone.
+• Win+Alt+Shift+D — Do what the text says: type a request ("reply that I'll be 10 minutes late") and get the result in its place.
 • Win+Alt+Shift+F — Fact-check: searches the web and replaces the text with a short report: what was checked, true or false, the correct facts and the sources.
 • Win+Alt+Shift+J — Joke on this topic: type a topic and get a short joke in the same language.
 • Win+Alt+Shift+P — Poem on this topic: type a topic or a wish ("a birthday poem for my mom") and get a rhymed poem.
@@ -93,11 +94,12 @@ HotkeyAI presses Ctrl+A, Ctrl+C and Ctrl+V for you, only in the field you are ty
 An AI provider is required: a ChatGPT Plus or Pro plan, or an API key from OpenAI, Anthropic or Google (Google AI Studio offers free keys with a daily limit). HotkeyAI is open source: github.com/nauroman/HotkeyAI
 
 **What's new in this version**
-New built-in actions: Fact-check (Win+Alt+Shift+F), Joke on this topic (Win+Alt+Shift+J) and Poem on this topic (Win+Alt+Shift+P). Fix in your language moves to Win+Alt+Shift+O. Any action can now search the web and think longer. The built-in actions are only examples: change them or add your own in Settings → Actions. Already using HotkeyAI? Choose More → Add built-in actions again there to get the new ones.
+New built-in actions: Do what the text says (Win+Alt+Shift+D), Fact-check (Win+Alt+Shift+F), Joke on this topic (Win+Alt+Shift+J) and Poem on this topic (Win+Alt+Shift+P). Fix in your language moves to Win+Alt+Shift+O for new users. Any action can now search the web and think longer. The built-in actions are only examples: change them or add your own in Settings → Actions. Already using HotkeyAI? The new actions are added at the end of your list, and your own actions and shortcuts stay as they are.
 
 **Product features** (≤ 20, each ≤ 200)
 - Win+Alt+E turns your draft into clear, natural English, translating from any language
 - Win+Alt+Shift+O fixes spelling, grammar and punctuation in the language you typed
+- Win+Alt+Shift+D does what your text asks: type a request, get the result in its place
 - Win+Alt+Shift+F checks the facts with a web search; Win+Alt+Shift+J and P write a joke or a poem on the topic
 - The built-in actions are examples: change them, or add your own with any prompt
 - Any action can search the web and think longer

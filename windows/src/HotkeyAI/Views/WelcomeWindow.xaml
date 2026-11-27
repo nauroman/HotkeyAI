@@ -24,18 +24,21 @@
                 <RowDefinition />
                 <RowDefinition />
                 <RowDefinition />
+                <RowDefinition />
             </Grid.RowDefinitions>
             <TextBlock Text="Win+Alt+E" FontWeight="SemiBold" Margin="0,0,0,6" />
             <TextBlock Grid.Column="1" TextWrapping="Wrap" Margin="0,0,0,6"
                        Text="improve your text in natural English (it translates other languages)" />
             <TextBlock Grid.Row="1" Text="Win+Alt+Shift+O" FontWeight="SemiBold" Margin="0,0,0,6" />
             <TextBlock Grid.Row="1" Grid.Column="1" TextWrapping="Wrap" Margin="0,0,0,6" Text="correct it in the language you typed" />
-            <TextBlock Grid.Row="2" Text="Win+Alt+Shift+F" FontWeight="SemiBold" Margin="0,0,0,6" />
-            <TextBlock Grid.Row="2" Grid.Column="1" TextWrapping="Wrap" Margin="0,0,0,6" Text="check the facts, with a web search" />
-            <TextBlock Grid.Row="3" Text="Win+Alt+Shift+J" FontWeight="SemiBold" Margin="0,0,0,6" />
-            <TextBlock Grid.Row="3" Grid.Column="1" TextWrapping="Wrap" Margin="0,0,0,6" Text="write a joke on the topic" />
-            <TextBlock Grid.Row="4" Text="Win+Alt+Shift+P" FontWeight="SemiBold" />
-            <TextBlock Grid.Row="4" Grid.Column="1" TextWrapping="Wrap" Text="write a poem on the topic" />
+            <TextBlock Grid.Row="2" Text="Win+Alt+Shift+D" FontWeight="SemiBold" Margin="0,0,0,6" />
+            <TextBlock Grid.Row="2" Grid.Column="1" TextWrapping="Wrap" Margin="0,0,0,6" Text="do what your text asks, such as “reply that I'll be late”" />
+            <TextBlock Grid.Row="3" Text="Win+Alt+Shift+F" FontWeight="SemiBold" Margin="0,0,0,6" />
+            <TextBlock Grid.Row="3" Grid.Column="1" TextWrapping="Wrap" Margin="0,0,0,6" Text="check the facts, with a web search" />
+            <TextBlock Grid.Row="4" Text="Win+Alt+Shift+J" FontWeight="SemiBold" Margin="0,0,0,6" />
+            <TextBlock Grid.Row="4" Grid.Column="1" TextWrapping="Wrap" Margin="0,0,0,6" Text="write a joke on the topic" />
+            <TextBlock Grid.Row="5" Text="Win+Alt+Shift+P" FontWeight="SemiBold" />
+            <TextBlock Grid.Row="5" Grid.Column="1" TextWrapping="Wrap" Text="write a poem on the topic" />
         </Grid>
         <TextBlock TextWrapping="Wrap" Margin="0,0,0,10"
                    Text="HotkeyAI lives in the notification area of the taskbar (the keycap icon; it may be under ^)." />
