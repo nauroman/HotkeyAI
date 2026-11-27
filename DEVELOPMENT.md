@@ -72,17 +72,23 @@ shipping a closed-source App Store build.
 
 ```bash
 scripts/test.sh                 # unit tests: parsing, prompts, menus, icons, OAuth loopback listener
-scripts/build-app.sh            # → build/HotkeyAI.app (sandboxed, ad-hoc signed)
+scripts/build-app.sh            # → build/HotkeyAI.app (sandboxed; signing below)
 open build/HotkeyAI.app
 ```
 
 Move the app to /Applications for "Open at Login" to be reliable.
 
-macOS ties the Accessibility permission to the app's signature. Run
-`scripts/make-signing-cert.sh` once: it creates a self-signed "HotkeyAI Local Signing"
-certificate in your login keychain, and `build-app.sh` then signs every build with it, so the
-permission survives rebuilds. Without it the build is signed ad-hoc and must be re-approved
-after every rebuild. To use another certificate: `SIGN_IDENTITY="Apple Development: …" scripts/build-app.sh`.
+macOS ties the Accessibility permission and the saved API keys / ChatGPT sign-in to the
+app's signature. `build-app.sh` picks the first of these it finds:
+
+| Signature | Accessibility after a rebuild | Keys and ChatGPT sign-in after a rebuild |
+|---|---|---|
+| `SIGN_IDENTITY="…"` | depends on the certificate | depends on the certificate |
+| **Apple Development** certificate (Xcode → Settings → Accounts → Manage Certificates) | kept | kept: keychain items belong to the team ID |
+| "HotkeyAI Local Signing" from `scripts/make-signing-cert.sh` | kept | **lost**: with no team ID, each item belongs to the exact binary that saved it |
+| ad-hoc | lost | lost |
+
+Switching from one signature to another means granting Accessibility and signing in once more.
 
 ### Permission
 
