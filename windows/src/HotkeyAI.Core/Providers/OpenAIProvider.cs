@@ -22,12 +22,18 @@ public static class OpenAIResponses
             ["store"] = false,
             ["stream"] = true,
         };
+        if (request.WebSearch)
+        {
+            body["tools"] = new JsonArray(new JsonObject { ["type"] = "web_search" });
+            // GPT-5 models can't search with minimal reasoning.
+            if (effort == "minimal") effort = "low";
+        }
         if (!string.IsNullOrEmpty(effort)) body["reasoning"] = new JsonObject { ["effort"] = effort };
 
         using var req = Http.JsonRequest(HttpMethod.Post, baseUrl + "/responses",
             new Dictionary<string, string> { ["Authorization"] = $"Bearer {bearer}", ["Accept"] = "text/event-stream" },
             body);
-        using var response = await Http.Client.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, ct);
+        using var response = await Http.ClientFor(request).SendAsync(req, HttpCompletionOption.ResponseHeadersRead, ct);
         var status = (int)response.StatusCode;
         if (!response.IsSuccessStatusCode)
         {
@@ -47,7 +53,8 @@ public static class OpenAIResponses
     }
 }
 
-/// Collects text from Responses API server-sent events.
+/// Collects text from Responses API server-sent events. Only the last message counts:
+/// with web search, a model may write a short message before it searches.
 public sealed class SseAccumulator(string providerName, int status = 200)
 {
     private readonly System.Text.StringBuilder _text = new();
@@ -67,6 +74,9 @@ public sealed class SseAccumulator(string providerName, int status = 200)
 
         switch (type)
         {
+            case "response.output_item.added":
+                if (Http.Str(ev["item"]?["type"]) == "message") _text.Clear();
+                break;
             case "response.output_text.delta":
                 _text.Append(Http.Str(ev["delta"]));
                 break;

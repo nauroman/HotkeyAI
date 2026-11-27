@@ -31,16 +31,29 @@ public class PromptTests
     }
 
     [Fact]
+    public void OnlyOpenEndedPromptsGetTodaysDate()
+    {
+        var day = new DateTime(2026, 3, 7);
+        var action = new HotkeyAction { Name = "x", Prompt = "Do it." };
+        Assert.DoesNotContain("2026", DefaultPrompts.Instructions(action, day));
+        action.StrictTransform = false;
+        Assert.Contains("Today's date is 2026-03-07.", DefaultPrompts.Instructions(action, day));
+    }
+
+    [Fact]
     public void DefaultActionsUseWinAltShortcuts()
     {
         var actions = DefaultPrompts.DefaultActions();
-        Assert.Equal(3, actions.Count);
+        Assert.Equal(new[] { "Win+Alt+E", "Win+Alt+Shift+O", "Win+Alt+Shift+F", "Win+Alt+Shift+J", "Win+Alt+Shift+P" },
+            actions.Select(a => a.Shortcut!.DisplayString));
         Assert.Contains("American English", actions[0].Prompt);
-        Assert.Equal("Win+Alt+E", actions[0].Shortcut?.DisplayString);
         Assert.Contains("Keep the author's own voice", actions[1].Prompt);
-        Assert.Equal("Win+Alt+Shift+E", actions[1].Shortcut?.DisplayString);
-        Assert.Contains("rich vocabulary", actions[2].Prompt);
-        Assert.Null(actions[2].Shortcut);
+        Assert.Contains("Fact-check", actions[2].Prompt);
+        Assert.Contains("joke", actions[3].Prompt);
+        Assert.Contains("poem", actions[4].Prompt);
+        // Only Fact-check searches; transformations guard against instructions in the text.
+        Assert.Equal(new[] { false, false, true, false, false }, actions.Select(a => a.WebSearch));
+        Assert.Equal(new[] { true, true, false, false, false }, actions.Select(a => a.StrictTransform));
     }
 
     [Fact]
@@ -49,9 +62,11 @@ public class PromptTests
         // The Mac sources are the reference; the Windows copies must not drift.
         var swift = File.ReadAllText(Path.Combine(RepoRoot(), "Sources", "HotkeyAI", "DefaultPrompts.swift")).Replace("\r\n", "\n");
         foreach (var prompt in new[] { DefaultPrompts.TranslateToEnglish, DefaultPrompts.FixInOriginalLanguage,
-                     DefaultPrompts.ElegantInOriginalLanguage, DefaultPrompts.StrictSourceRule, DefaultPrompts.LightSourceRule })
+                     DefaultPrompts.FactCheck, DefaultPrompts.WriteJoke, DefaultPrompts.WritePoem,
+                     DefaultPrompts.StrictSourceRule, DefaultPrompts.LightSourceRule })
         {
-            var indented = string.Join("\n", prompt.Replace("\r\n", "\n").Split('\n').Select(line => "    " + line));
+            var indented = string.Join("\n", prompt.Replace("\r\n", "\n").Split('\n')
+                .Select(line => line.Length == 0 ? "" : "    " + line));
             Assert.Contains(indented, swift);
         }
     }
@@ -95,6 +110,7 @@ public class ModelTests
         Assert.Equal("Old", action.Name);
         Assert.Equal(CaptureMode.All, action.CaptureMode);
         Assert.True(action.StrictTransform);
+        Assert.False(action.WebSearch);
         Assert.True(action.Enabled);
         Assert.Null(action.Provider); // unknown provider → the default one
     }
@@ -106,6 +122,7 @@ public class ModelTests
         {
             Name = "A", Prompt = "B", Shortcut = new KeyCombo(0x51, HotkeyModifiers.Control),
             Provider = ProviderKind.Anthropic, Model = "claude-haiku-5-5", CaptureMode = CaptureMode.SelectionOrAll,
+            WebSearch = true,
         };
         var json = JsonSerializer.Serialize(action, SettingsStore.JsonOptions);
         Assert.Contains("\"selectionOrAll\"", json);
@@ -116,6 +133,8 @@ public class ModelTests
         Assert.Equal(action.Shortcut, back.Shortcut);
         Assert.Equal(ProviderKind.Anthropic, back.Provider);
         Assert.Equal(CaptureMode.SelectionOrAll, back.CaptureMode);
+        Assert.True(back.WebSearch);
+        Assert.True(action.Clone().WebSearch);
     }
 
     [Fact]
@@ -162,8 +181,10 @@ public class TrayMenuTests
     {
         var actions = DefaultPrompts.DefaultActions();
         actions[2].Name = "Q&A";
+        actions[2].Shortcut = null;
         var items = TrayMenu.Build(actions, runningActionName: null);
         Assert.Equal(new TrayMenuItem(TrayMenu.FirstAction, "Improve in English\tWin+Alt+E"), items[0]);
+        Assert.Equal(new TrayMenuItem(TrayMenu.FirstAction + 1, "Fix in original language\tWin+Alt+Shift+O"), items[1]);
         Assert.Equal(new TrayMenuItem(TrayMenu.FirstAction + 2, "Q&&A"), items[2]);
         Assert.Single(items, i => i.IsDefault && i.Command == TrayMenu.Settings);
     }
@@ -194,7 +215,7 @@ public class AppModelTests : IDisposable
         var secrets = new MemorySecretStore();
         var model = new AppModel(new SettingsStore(_dir), secrets);
         Assert.True(model.IsFirstLaunch);
-        Assert.Equal(3, model.Actions.Count);
+        Assert.Equal(5, model.Actions.Count);
         Assert.Equal(ProviderKind.ChatGPT, model.DefaultProvider);
 
         model.DefaultProvider = ProviderKind.Gemini;
@@ -237,8 +258,10 @@ public class AppModelTests : IDisposable
         model.Actions[2].Shortcut = model.Actions[0].Shortcut;
         Assert.Single(model.Conflicts(model.Actions[0]));
         model.RestoreDefaults();
-        Assert.Equal(6, model.Actions.Count);
-        Assert.All(model.Actions.Skip(3), a => Assert.Null(a.Shortcut)); // shortcuts already in use are not duplicated
+        Assert.Equal(10, model.Actions.Count);
+        // Shortcuts already in use are not duplicated; Fact-check's was freed above, so it comes back.
+        Assert.Equal(new KeyCombo?[] { null, null, DefaultPrompts.FactCheckShortcut, null, null },
+            model.Actions.Skip(5).Select(a => a.Shortcut));
         var copy = model.Duplicate(model.Actions[0]);
         Assert.Null(copy.Shortcut);
         Assert.Equal(model.Actions[1], copy);
@@ -250,7 +273,7 @@ public class AppModelTests : IDisposable
         Directory.CreateDirectory(_dir);
         File.WriteAllText(Path.Combine(_dir, "settings.json"), "{ not json");
         var model = new AppModel(new SettingsStore(_dir), new MemorySecretStore());
-        Assert.Equal(3, model.Actions.Count);
+        Assert.Equal(5, model.Actions.Count);
         Assert.True(File.Exists(Path.Combine(_dir, "settings.json.bad")));
     }
 
@@ -291,6 +314,19 @@ public class ResponseParsingTests
     }
 
     [Fact]
+    public void OnlyTheLastMessageIsTheAnswer()
+    {
+        var output = Feed(
+            """data: {"type":"response.output_item.added","item":{"type":"message"}}""",
+            """data: {"type":"response.output_text.delta","delta":"Let me search."}""",
+            """data: {"type":"response.output_item.added","item":{"type":"web_search_call"}}""",
+            """data: {"type":"response.output_item.added","item":{"type":"message"}}""",
+            """data: {"type":"response.output_text.delta","delta":"Answer"}""",
+            """data: {"type":"response.completed","response":{"status":"completed"}}""");
+        Assert.Equal("Answer", output);
+    }
+
+    [Fact]
     public void StreamWithoutCompletedIsRejected() =>
         Assert.Throws<AIException>(() => Feed("""data: {"type":"response.output_text.delta","delta":"partial"}"""));
 
@@ -311,6 +347,26 @@ public class ResponseParsingTests
             AnthropicProvider.Parse(JsonNode.Parse("""{"stop_reason":"refusal","content":[]}""")!.AsObject())).Kind);
         Assert.Equal(AIErrorKind.Incomplete, Assert.Throws<AIException>(() =>
             AnthropicProvider.Parse(JsonNode.Parse("""{"stop_reason":"max_tokens","content":[{"type":"text","text":"cut"}]}""")!.AsObject())).Kind);
+    }
+
+    [Fact]
+    public void AnthropicWebSearchAnswerFollowsTheLastSearch()
+    {
+        const string cited = """{"type":"text","text":"built in 1889.","citations":[{"type":"web_search_result_location","url":"https://example.org/eiffel"}]}""";
+        var obj = JsonNode.Parse("""{"stop_reason":"end_turn","content":[{"type":"text","text":"Let me check."},{"type":"server_tool_use","name":"web_search"},{"type":"web_search_tool_result","content":[]},{"type":"text","text":"The tower was "},""" + cited + "]}")!.AsObject();
+        Assert.Equal("The tower was built in 1889.\n\nhttps://example.org/eiffel", AnthropicProvider.Parse(obj));
+        // Sources the answer already lists are not added again.
+        obj = JsonNode.Parse("""{"stop_reason":"end_turn","content":[{"type":"text","text":"See https://example.org/eiffel"},""" + cited + "]}")!.AsObject();
+        Assert.Equal("See https://example.org/eiffelbuilt in 1889.", AnthropicProvider.Parse(obj));
+    }
+
+    [Fact]
+    public void AnthropicSearchToolMatchesTheModel()
+    {
+        Assert.Equal("web_search_20260209", Http.Str(AnthropicProvider.WebSearchTool("claude-opus-5-5")["type"]));
+        Assert.Equal("web_search_20250305", Http.Str(AnthropicProvider.WebSearchTool("claude-haiku-4-5-20251001")["type"]));
+        Assert.True(AnthropicProvider.SupportsAdaptiveThinking("claude-sonnet-5-5"));
+        Assert.False(AnthropicProvider.SupportsAdaptiveThinking("claude-sonnet-4-5-20250929"));
     }
 
     [Fact]

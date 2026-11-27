@@ -107,11 +107,14 @@ struct HotkeyAction: Codable, Identifiable, Hashable {
     var captureMode: CaptureMode = .all
     /// Wrap the captured text as data so instructions inside it are transformed, not obeyed.
     var strictTransform: Bool = true
+    /// Let the AI search the web and reason longer, where the provider can.
+    var webSearch: Bool = false
     var enabled: Bool = true
 
     init(id: UUID = UUID(), name: String, prompt: String, shortcut: KeyCombo?,
          provider: ProviderKind? = nil, model: String = "", reasoningEffort: String = "",
-         captureMode: CaptureMode = .all, strictTransform: Bool = true, enabled: Bool = true) {
+         captureMode: CaptureMode = .all, strictTransform: Bool = true, webSearch: Bool = false,
+         enabled: Bool = true) {
         self.id = id
         self.name = name
         self.prompt = prompt
@@ -121,6 +124,7 @@ struct HotkeyAction: Codable, Identifiable, Hashable {
         self.reasoningEffort = reasoningEffort
         self.captureMode = captureMode
         self.strictTransform = strictTransform
+        self.webSearch = webSearch
         self.enabled = enabled
     }
 
@@ -136,6 +140,7 @@ struct HotkeyAction: Codable, Identifiable, Hashable {
         reasoningEffort = try c.decodeIfPresent(String.self, forKey: .reasoningEffort) ?? ""
         captureMode = (try? c.decodeIfPresent(CaptureMode.self, forKey: .captureMode)) ?? .all
         strictTransform = try c.decodeIfPresent(Bool.self, forKey: .strictTransform) ?? true
+        webSearch = try c.decodeIfPresent(Bool.self, forKey: .webSearch) ?? false
         enabled = try c.decodeIfPresent(Bool.self, forKey: .enabled) ?? true
     }
 }

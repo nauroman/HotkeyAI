@@ -8,7 +8,9 @@ using System.Text.Json.Nodes;
 
 namespace HotkeyAI.Core.Providers;
 
-public sealed record AIRequest(string Instructions, string Input, string Model, string ReasoningEffort);
+/// WebSearch lets the model search the web, where the provider can; such requests take much longer.
+public sealed record AIRequest(string Instructions, string Input, string Model, string ReasoningEffort,
+    bool WebSearch = false);
 
 public sealed record ModelInfo(string Id, string Name)
 {
@@ -93,6 +95,19 @@ public static class Http
         Timeout = TimeSpan.FromSeconds(120),
     };
 
+    /// Web searches and long reasoning can keep a request silent for minutes.
+    public static readonly HttpClient LongClient = new(new SocketsHttpHandler
+    {
+        ConnectTimeout = TimeSpan.FromSeconds(20),
+        PooledConnectionLifetime = TimeSpan.FromMinutes(5),
+        UseCookies = false,
+    })
+    {
+        Timeout = TimeSpan.FromSeconds(300),
+    };
+
+    public static HttpClient ClientFor(AIRequest request) => request.WebSearch ? LongClient : Client;
+
     private static readonly JsonSerializerOptions BodyOptions = new()
     {
         Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
@@ -111,9 +126,10 @@ public static class Http
     }
 
     /// Sends a request and returns the JSON object it answers with, or throws AIException.Http.
-    public static async Task<JsonObject> JsonAsync(HttpRequestMessage request, string provider, CancellationToken ct = default)
+    public static async Task<JsonObject> JsonAsync(HttpRequestMessage request, string provider, CancellationToken ct = default,
+        HttpClient? client = null)
     {
-        using var response = await Client.SendAsync(request, ct);
+        using var response = await (client ?? Client).SendAsync(request, ct);
         var text = await response.Content.ReadAsStringAsync(ct);
         if (!response.IsSuccessStatusCode)
         {

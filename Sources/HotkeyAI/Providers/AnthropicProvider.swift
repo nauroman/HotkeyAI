@@ -17,14 +17,19 @@ struct AnthropicProvider: AIProvider {
     }
 
     func complete(_ request: AIRequest) async throws -> String {
+        var messages: [[String: Any]] = [["role": "user", "content": request.input]]
         var body: [String: Any] = [
             "model": request.model,
-            "max_tokens": 16000,
+            "max_tokens": request.webSearch ? 32000 : 16000,
             "system": request.instructions,
-            "messages": [["role": "user", "content": request.input]],
+            "messages": messages,
         ]
         if supportsEffort(request.model) {
             body["output_config"] = ["effort": effort(from: request.reasoningEffort)]
+        }
+        if request.webSearch {
+            body["tools"] = [Self.webSearchTool(for: request.model)]
+            if Self.supportsAdaptiveThinking(request.model) { body["thinking"] = ["type": "adaptive"] }
         }
         var headers = self.headers
         if Self.fallbackModels.contains(request.model) {
@@ -32,8 +37,17 @@ struct AnthropicProvider: AIProvider {
             headers["anthropic-beta"] = "server-side-fallback-2026-07-01"
             body["fallbacks"] = "default"
         }
-        let req = try HTTP.jsonRequest(Self.baseURL.appendingPathComponent("messages"), headers: headers, body: body)
-        return try Self.parse(try await HTTP.json(req, provider: "Claude"))
+        // A long search turn can pause; sending the paused turn back lets the server go on.
+        var paused: [Any] = []
+        for _ in 0..<4 {
+            let req = try HTTP.jsonRequest(Self.baseURL.appendingPathComponent("messages"), headers: headers, body: body)
+            let obj = try await HTTP.json(req, provider: "Claude", session: HTTP.session(for: request))
+            guard obj["stop_reason"] as? String == "pause_turn" else { return try Self.parse(obj) }
+            paused += obj["content"] as? [Any] ?? []
+            messages = [messages[0], ["role": "assistant", "content": paused]]
+            body["messages"] = messages
+        }
+        throw AIError.incomplete("the web search took too long")
     }
 
     static func parse(_ obj: [String: Any]) throws -> String {
@@ -43,13 +57,40 @@ struct AnthropicProvider: AIProvider {
         case "max_tokens": throw AIError.incomplete("output limit reached")
         case let other: throw AIError.incomplete(other)
         }
-        let text = (obj["content"] as? [[String: Any]] ?? [])
-            .filter { $0["type"] as? String == "text" }
-            .compactMap { $0["text"] as? String }
+        let blocks = obj["content"] as? [[String: Any]] ?? []
+        // With web search, text before the last search is commentary ("Let me check…");
+        // the answer comes after it.
+        let notAnswer: Set<String> = ["text", "thinking", "redacted_thinking"]
+        let start = blocks.lastIndex { !notAnswer.contains($0["type"] as? String ?? "") }.map { $0 + 1 } ?? 0
+        let answer = blocks[start...].filter { $0["type"] as? String == "text" }
+        let text = answer.compactMap { $0["text"] as? String }
             .joined()
             .trimmingCharacters(in: .whitespacesAndNewlines)
         guard !text.isEmpty else { throw AIError.empty }
+        // Answers built on web search must show their sources; add them if the text has none.
+        var sources: [String] = []
+        for block in answer {
+            for citation in block["citations"] as? [[String: Any]] ?? [] {
+                if let url = citation["url"] as? String, !sources.contains(url) { sources.append(url) }
+            }
+        }
+        if !sources.isEmpty && !sources.contains(where: text.contains) {
+            return text + "\n\n" + sources.prefix(3).joined(separator: "\n")
+        }
         return text
+    }
+
+    /// Dynamic filtering (fewer tokens per search) needs Claude 4.6 or later.
+    static func webSearchTool(for model: String) -> [String: Any] {
+        let dynamic = ["fable", "mythos", "opus-5", "opus-4-8", "opus-4-7", "opus-4-6", "sonnet-5", "sonnet-4-6"]
+        let type = dynamic.contains(where: model.contains) ? "web_search_20260209" : "web_search_20250305"
+        return ["type": type, "name": "web_search", "max_uses": 8]
+    }
+
+    /// Models that take `thinking: {type: "adaptive"}`. Opus 4.7 and 4.8 don't think without it.
+    static func supportsAdaptiveThinking(_ model: String) -> Bool {
+        ["fable", "mythos", "opus-5", "opus-4-8", "opus-4-7", "opus-4-6", "sonnet-5", "sonnet-4-6", "haiku-5"]
+            .contains(where: model.contains)
     }
 
     func listModels() async throws -> [ModelInfo] {

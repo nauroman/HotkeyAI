@@ -7,7 +7,7 @@ namespace HotkeyAI.Views;
 public sealed class ActionEditor : ObservableObject, IDisposable
 {
     private readonly AppModel _model;
-    private string _sample = "мне кажеться, идея хорошая но детали надо абсудить заранее.";
+    private string _sample;
     private string _output = "";
     private string? _testError;
     private bool _testing;
@@ -18,6 +18,7 @@ public sealed class ActionEditor : ObservableObject, IDisposable
     {
         _model = model;
         Action = action;
+        _sample = DefaultPrompts.SampleText(action);
         action.PropertyChanged += OnChanged;
         model.PropertyChanged += OnChanged;
         model.Actions.CollectionChanged += OnCollectionChanged;

@@ -145,10 +145,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         alert.messageText = "Welcome to HotkeyAI"
         alert.informativeText = """
         HotkeyAI lives in the menu bar (the keycap icon). In any text field, press \
-        ⌥⌘E to improve your text in English (it translates other languages), or ⌥⇧⌘E to \
-        correct it in the language you typed. \
-        It uses Apple Intelligence on this Mac by default; you can sign in to ChatGPT or add \
-        other providers, and change the shortcuts and prompts, in Settings.
+        ⌥⌘E to improve your text in English (it translates other languages), or ⌥⇧⌘O to \
+        correct it in the language you typed. ⌥⇧⌘F checks the facts, ⌥⇧⌘J writes a joke \
+        and ⌥⇧⌘P a poem on the topic.
+
+        These actions are just examples. In Settings you can change their prompts and \
+        shortcuts, delete them, or add your own with any prompt you like. HotkeyAI uses \
+        Apple Intelligence on this Mac by default; you can sign in to ChatGPT or add other \
+        providers there too.
 
         Next, macOS will ask you to let HotkeyAI press ⌘A, ⌘C and ⌘V for you.
 

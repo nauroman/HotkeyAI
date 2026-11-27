@@ -7,7 +7,8 @@
 <p align="center">
   <b>Your draft, fixed in place.</b><br>
   Write in any app and press one shortcut. HotkeyAI rewrites the text in the field you are typing in:
-  clear, natural English, or your own language without the mistakes. Free for Mac and Windows.
+  clear, natural English, or your own language without the mistakes. It can also check the facts or
+  write a joke or a poem, and you can add any prompt of your own. Free for Mac and Windows.
 </p>
 
 <p align="center">
@@ -40,10 +41,25 @@ version back in the same place. You don't copy anything, switch apps or open a c
 - Works in any app: Mail, Messages, Outlook, Slack, Word, Google Docs, any browser.
 - Lives as a small keycap icon in the menu bar on a Mac, or in the notification area on Windows.
 - Puts your clipboard back after every rewrite.
-- You can add your own actions, each with its own shortcut and prompt: "make it shorter",
-  "make it polite", "turn this into bullet points".
+- Every action is just a prompt with a shortcut. Change the built-in ones or add your own:
+  "make it shorter", "make it polite", "turn this into bullet points", "reply to this email".
 
-## Two shortcuts, ready on day one
+## Five ready-made actions
+
+HotkeyAI starts with five actions so you can try it right away. **They are only examples.** In
+Settings → Actions you can change the prompt, the shortcut and the AI of any of them, delete the ones
+you don't need, and press **+** to add your own with any prompt you like.
+
+| Action | Mac | Windows | What it does |
+| --- | --- | --- | --- |
+| Improve in English | <kbd>⌥</kbd> <kbd>⌘</kbd> <kbd>E</kbd> | <kbd>Win</kbd> <kbd>Alt</kbd> <kbd>E</kbd> | Fixes mistakes and translates other languages into natural English |
+| Fix in original language | <kbd>⌥</kbd> <kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>O</kbd> | <kbd>Win</kbd> <kbd>Alt</kbd> <kbd>Shift</kbd> <kbd>O</kbd> | Corrects mistakes in the language you typed |
+| Fact-check | <kbd>⌥</kbd> <kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>F</kbd> | <kbd>Win</kbd> <kbd>Alt</kbd> <kbd>Shift</kbd> <kbd>F</kbd> | Searches the web and says whether the claims are true |
+| Joke on this topic | <kbd>⌥</kbd> <kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>J</kbd> | <kbd>Win</kbd> <kbd>Alt</kbd> <kbd>Shift</kbd> <kbd>J</kbd> | Writes a short joke about what you typed |
+| Poem on this topic | <kbd>⌥</kbd> <kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>P</kbd> | <kbd>Win</kbd> <kbd>Alt</kbd> <kbd>Shift</kbd> <kbd>P</kbd> | Writes a rhymed poem about what you typed |
+
+Every action answers in the language you wrote in. The result replaces your text; press
+<kbd>⌘</kbd> <kbd>Z</kbd> (<kbd>Ctrl</kbd> <kbd>Z</kbd> on Windows) to get it back.
 
 ### Improve in English: <kbd>⌥</kbd> <kbd>⌘</kbd> <kbd>E</kbd> on a Mac, <kbd>Win</kbd> <kbd>Alt</kbd> <kbd>E</kbd> on Windows
 
@@ -55,13 +71,33 @@ natural, fluent English.
 | hi team, we has two ideas for the launch and i thinks they is worth discussing tomorow | Hi team, we have two ideas for the launch and I think they are worth discussing tomorrow |
 | я не обещал закончить к пятнице | I did not promise to finish by Friday. |
 
-### Fix in original language: <kbd>⌥</kbd> <kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>E</kbd> on a Mac, <kbd>Win</kbd> <kbd>Alt</kbd> <kbd>Shift</kbd> <kbd>E</kbd> on Windows
+### Fix in original language: <kbd>⌥</kbd> <kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>O</kbd> on a Mac, <kbd>Win</kbd> <kbd>Alt</kbd> <kbd>Shift</kbd> <kbd>O</kbd> on Windows
 
 Corrects mistakes in the language you typed, and keeps your own words and tone.
 
 | You type | HotkeyAI writes |
 | --- | --- |
 | mañana te envio el informe si todo sale bien | Mañana te envío el informe si todo sale bien. |
+
+### Fact-check: <kbd>⌥</kbd> <kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>F</kbd> on a Mac, <kbd>Win</kbd> <kbd>Alt</kbd> <kbd>Shift</kbd> <kbd>F</kbd> on Windows
+
+Select a sentence, or leave nothing selected to check the whole field. HotkeyAI replaces it with a
+short report: a line saying what was checked, the verdict (✅ true, ⚠️ partly true, ❌ false or
+❓ can't verify), then each claim with the correct fact, and the sources it found.
+
+Fact-check searches the web, so it needs ChatGPT, OpenAI, Claude or Gemini. Apple Intelligence works
+offline and would check facts only from memory, so on a Mac choose another AI for this action.
+
+### Joke and poem on this topic: <kbd>⌥</kbd> <kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>J</kbd> and <kbd>⌥</kbd> <kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>P</kbd> on a Mac, <kbd>Win</kbd> <kbd>Alt</kbd> <kbd>Shift</kbd> <kbd>J</kbd> and <kbd>P</kbd> on Windows
+
+Type a topic, such as "Monday and coffee", or a wish, such as "a birthday poem for my mom, eight
+lines", and press the shortcut. A joke or a poem in the same language takes its place.
+
+### Search the web and think longer
+
+Any action can look things up before it answers: turn on **Search the web and think longer** for it
+in Settings → Actions. It works with ChatGPT, OpenAI, Claude and Gemini; it is slower and uses more of
+your plan or API credit. Fact-check has it on.
 
 ## Your choice of AI
 
@@ -145,6 +181,15 @@ Windows doesn't let other apps type into apps that run as administrator, so Hotk
 </details>
 
 <details>
+<summary><b>Can I change or remove the built-in actions?</b></summary>
+<br>
+Yes. They are only examples. In Settings → Actions, edit any action's name, shortcut, prompt and AI,
+delete it with −, or press + to add your own. Write the prompt the way you would ask a person:
+"Make this shorter and friendlier", "Reply to this email and say yes", "Explain this code". If you
+delete one by mistake, choose ⋯ → Add built-in actions again.
+</details>
+
+<details>
 <summary><b>Is formatting kept?</b></summary>
 <br>
 No. The result is pasted as plain text. In code editors that copy the current line when nothing is
@@ -180,8 +225,8 @@ scripts/test.sh          # Mac unit tests
 scripts/build-app.sh     # → build/HotkeyAI.app
 ```
 
-HotkeyAI is the successor of [ChatGPTHotkey](https://github.com/nauroman/ChatGPTHotkey) and uses the
-same two prompts.
+HotkeyAI is the successor of [ChatGPTHotkey](https://github.com/nauroman/ChatGPTHotkey); its first two
+actions use the same two prompts.
 </details>
 
 ## License

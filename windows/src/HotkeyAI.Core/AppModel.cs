@@ -306,8 +306,10 @@ public sealed class AppModel : ObservableObject, IValueStore
         }
         if (model.Length == 0)
             throw AIException.NotConfigured($"Choose a {kind.ShortName()} model in Settings → AI Providers.");
+        // Searching the web goes with deeper reasoning unless the action sets its own effort.
+        var effort = action.WebSearch && action.ReasoningEffort.Length == 0 ? "high" : action.ReasoningEffort;
         var request = new AIRequest(DefaultPrompts.Instructions(action), DefaultPrompts.UserPayload(text), model,
-            action.ReasoningEffort);
+            effort, action.WebSearch);
         return await ProviderFor(kind).CompleteAsync(request, ct);
     }
 }

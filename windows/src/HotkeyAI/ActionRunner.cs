@@ -84,7 +84,7 @@ internal sealed class ActionRunner(AppModel model, Hud hud, ForegroundTracker tr
                     HudStyle.Info);
             return;
         }
-        hud.Show($"{action.Name}…", HudStyle.Progress);
+        hud.Show(action.WebSearch ? $"{action.Name}: searching the web…" : $"{action.Name}…", HudStyle.Progress);
 
         try
         {

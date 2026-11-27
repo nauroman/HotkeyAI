@@ -8,13 +8,15 @@ struct GeminiProvider: AIProvider {
 
     func complete(_ request: AIRequest) async throws -> String {
         let model = request.model.hasPrefix("models/") ? String(request.model.dropFirst(7)) : request.model
-        let body: [String: Any] = [
+        var body: [String: Any] = [
             "systemInstruction": ["parts": [["text": request.instructions]]],
             "contents": [["role": "user", "parts": [["text": request.input]]]],
         ]
+        // Grounding with Google Search. Current Gemini models think on their own.
+        if request.webSearch { body["tools"] = [["google_search": [String: Any]()]] }
         let url = Self.baseURL.appendingPathComponent("models/\(model):generateContent")
         let req = try HTTP.jsonRequest(url, headers: ["x-goog-api-key": apiKey], body: body)
-        return try Self.parse(try await HTTP.json(req, provider: "Gemini"))
+        return try Self.parse(try await HTTP.json(req, provider: "Gemini", session: HTTP.session(for: request)))
     }
 
     static func parse(_ obj: [String: Any]) throws -> String {

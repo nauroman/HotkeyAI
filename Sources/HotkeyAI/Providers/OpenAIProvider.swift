@@ -8,6 +8,7 @@ enum OpenAIResponses {
     static let baseURL = URL(string: "https://api.openai.com/v1")!
 
     static func run(bearer: String, request: AIRequest, effort: String?, providerName: String) async throws -> String {
+        var effort = effort
         var body: [String: Any] = [
             "model": request.model,
             "instructions": request.instructions,
@@ -15,13 +16,18 @@ enum OpenAIResponses {
             "store": false,
             "stream": true,
         ]
+        if request.webSearch {
+            body["tools"] = [["type": "web_search"]]
+            // GPT-5 models can't search with minimal reasoning.
+            if effort == "minimal" { effort = "low" }
+        }
         if let effort, !effort.isEmpty { body["reasoning"] = ["effort": effort] }
 
         let req = try HTTP.jsonRequest(baseURL.appendingPathComponent("responses"),
                                        headers: ["Authorization": "Bearer \(bearer)",
                                                  "Accept": "text/event-stream"],
                                        body: body)
-        let (bytes, response) = try await HTTP.session.bytes(for: req)
+        let (bytes, response) = try await HTTP.session(for: request).bytes(for: req)
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
         guard (200..<300).contains(status) else {
             var data = Data()
@@ -38,7 +44,8 @@ enum OpenAIResponses {
     }
 }
 
-/// Collects text from Responses API server-sent events.
+/// Collects text from Responses API server-sent events. Only the last message counts:
+/// with web search, a model may write a short message before it searches.
 struct SSEAccumulator {
     let providerName: String
     let status: Int
@@ -59,6 +66,8 @@ struct SSEAccumulator {
               let event = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               let type = event["type"] as? String else { return false }
         switch type {
+        case "response.output_item.added":
+            if (event["item"] as? [String: Any])?["type"] as? String == "message" { text = "" }
         case "response.output_text.delta":
             text += event["delta"] as? String ?? ""
         case "response.refusal.delta", "response.refusal.done":

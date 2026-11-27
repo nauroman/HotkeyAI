@@ -26,7 +26,7 @@ Everything to paste into App Store Connect. Character limits are checked by
 Rewrite text with one shortcut
 
 **Promotional text** (170, no ⌥⌘⇧ symbols: App Store Connect rejects them here)
-One shortcut turns your draft into clear, natural English or fixes it in the language you typed, in any app. Runs on your Mac with Apple Intelligence.
+One shortcut in any app: clear English, your language without mistakes, a fact-check, a joke or a poem. Or any prompt of your own. Works with Apple Intelligence.
 
 **Keywords** (100)
 translate,grammar,proofread,rewrite,writing,english,spelling,editor,polish,shortcut,menu bar,text,AI
@@ -34,13 +34,17 @@ translate,grammar,proofread,rewrite,writing,english,spelling,editor,polish,short
 **Description** (4000)
 HotkeyAI improves the text you are typing without leaving the app you are in. Press a shortcut in any text field — Mail, Messages, Notes, Slack, a browser — and HotkeyAI replaces your draft with a clearer version.
 
-TWO ACTIONS, READY TO GO
+FIVE ACTIONS TO START WITH
 • ⌥⌘E — Improve in English: translates from any language into natural, fluent English, or polishes text that is already in English.
-• ⌥⇧⌘E — Fix in your language: corrects spelling, grammar and punctuation while keeping your own words and tone.
+• ⌥⇧⌘O — Fix in your language: corrects spelling, grammar and punctuation while keeping your own words and tone.
+• ⌥⇧⌘F — Fact-check: searches the web and replaces the text with a short report: what was checked, true or false, the correct facts and the sources.
+• ⌥⇧⌘J — Joke on this topic: type a topic and get a short joke in the same language.
+• ⌥⇧⌘P — Poem on this topic: type a topic or a wish ("a birthday poem for my mom") and get a rhymed poem.
 
-MAKE IT YOURS
-• Add your own actions, each with a name, a shortcut and a prompt: "make it shorter", "make it polite", "turn this into bullet points".
+THEY ARE ONLY EXAMPLES
+• Change any action's prompt, shortcut and AI, delete the ones you don't need, or add your own: "make it shorter", "make it polite", "reply to this email", "explain this code".
 • Choose what each action works on: the whole field, the selection, or the selection when there is one.
+• Let any action search the web and think longer (with ChatGPT, OpenAI, Claude or Gemini).
 • Try any prompt in Settings before you use it.
 
 PRIVATE BY DEFAULT
@@ -55,9 +59,10 @@ MADE FOR THE MAC
 
 HotkeyAI asks for permission to press ⌘A, ⌘C and ⌘V for you (System Settings → Privacy & Security → Accessibility). It sends those keys only to the field you are typing in, and only when you press one of your shortcuts.
 
-Apple Intelligence requires a compatible Mac with macOS 26 or later and does not support every language yet. ChatGPT sign-in requires a ChatGPT Plus or Pro plan. HotkeyAI is open source: github.com/nauroman/HotkeyAI
+Apple Intelligence requires a compatible Mac with macOS 26 or later and does not support every language yet; it works offline, so Fact-check and web search need ChatGPT, OpenAI, Claude or Gemini. ChatGPT sign-in requires a ChatGPT Plus or Pro plan. HotkeyAI is open source: github.com/nauroman/HotkeyAI
 
-**What's New** — first release, leave empty.
+**What's New** — 1.0: first release, leave empty. Next version:
+New built-in actions: Fact-check (⌥⇧⌘F), Joke on this topic (⌥⇧⌘J) and Poem on this topic (⌥⇧⌘P). Fix in your language moves to ⌥⇧⌘O. Any action can now search the web and think longer. The built-in actions are only examples: change them or add your own in Settings → Actions. Already using HotkeyAI? Choose ⋯ → Add built-in actions again there to get the new ones.
 
 ## Russian (add localization → Russian)
 
@@ -65,7 +70,7 @@ Apple Intelligence requires a compatible Mac with macOS 26 or later and does not
 Текст лучше одним нажатием
 
 **Promotional text** (170, no ⌥⌘⇧ symbols: App Store Connect rejects them here)
-Одно сочетание клавиш превращает черновик в ясный английский текст или исправляет его на вашем языке в любом приложении. Работает на Mac с Apple Intelligence.
+Одно сочетание клавиш в любом приложении: ясный английский, ваш язык без ошибок, проверка фактов, шутка или стихи. Или любой свой промпт. Работает с Apple Intelligence.
 
 **Keywords** (100)
 перевод,грамматика,орфография,английский,текст,редактор,исправить,переписать,ИИ,горячие клавиши
@@ -73,13 +78,17 @@ Apple Intelligence requires a compatible Mac with macOS 26 or later and does not
 **Description** (4000)
 HotkeyAI улучшает текст, который вы набираете, прямо в том приложении, где вы пишете. Нажмите сочетание клавиш в любом текстовом поле — в Почте, Сообщениях, Заметках, Slack или браузере, — и HotkeyAI заменит черновик более ясным вариантом.
 
-ДВА ДЕЙСТВИЯ СРАЗУ
+ПЯТЬ ДЕЙСТВИЙ ДЛЯ НАЧАЛА
 • ⌥⌘E — улучшить по-английски: переводит с любого языка на естественный английский или улучшает текст, уже написанный по-английски.
-• ⌥⇧⌘E — исправить на вашем языке: исправляет орфографию, грамматику и пунктуацию, сохраняя ваши слова и тон.
+• ⌥⇧⌘O — исправить на вашем языке: исправляет орфографию, грамматику и пунктуацию, сохраняя ваши слова и тон.
+• ⌥⇧⌘F — проверка фактов: ищет в интернете и заменяет текст коротким разбором: что проверялось, правда это или нет, верные факты и источники.
+• ⌥⇧⌘J — шутка на тему: напишите тему и получите короткую шутку на том же языке.
+• ⌥⇧⌘P — стихи на тему: напишите тему или пожелание («стих маме на день рождения») и получите стихотворение с рифмой.
 
-НАСТРОЙТЕ ПОД СЕБЯ
-• Добавляйте свои действия — у каждого своё название, сочетание клавиш и промпт: «сделай короче», «сделай вежливее», «оформи списком».
+ЭТО ТОЛЬКО ПРИМЕРЫ
+• Меняйте промпт, сочетание клавиш и ИИ любого действия, удаляйте ненужные или добавляйте свои: «сделай короче», «сделай вежливее», «ответь на это письмо», «объясни этот код».
 • Выбирайте, с каким текстом работает действие: всё поле, выделенный фрагмент или выделение, если оно есть.
+• Разрешите любому действию искать в интернете и думать дольше (с ChatGPT, OpenAI, Claude или Gemini).
 • Проверяйте любой промпт в настройках, прежде чем им пользоваться.
 
 ПРИВАТНОСТЬ ПО УМОЛЧАНИЮ
@@ -94,7 +103,7 @@ HotkeyAI улучшает текст, который вы набираете, п
 
 HotkeyAI попросит разрешение нажимать за вас ⌘A, ⌘C и ⌘V (Системные настройки → Конфиденциальность и безопасность → Универсальный доступ). Эти клавиши отправляются только в поле, где вы пишете, и только когда вы нажимаете своё сочетание.
 
-Apple Intelligence требует совместимый Mac с macOS 26 или новее и пока поддерживает не все языки. Вход через ChatGPT требует подписку ChatGPT Plus или Pro. Исходный код HotkeyAI открыт: github.com/nauroman/HotkeyAI
+Apple Intelligence требует совместимый Mac с macOS 26 или новее и пока поддерживает не все языки; она работает без интернета, поэтому для проверки фактов и поиска нужны ChatGPT, OpenAI, Claude или Gemini. Вход через ChatGPT требует подписку ChatGPT Plus или Pro. Исходный код HotkeyAI открыт: github.com/nauroman/HotkeyAI
 
 ## App Review information
 

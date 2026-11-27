@@ -15,6 +15,13 @@ struct ActionsView: View {
                     .onMove { state.actions.move(fromOffsets: $0, toOffset: $1) }
                 }
                 Divider()
+                Text("These actions are just examples. Change their prompts, shortcuts and AI, delete them, or press + to add your own.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 10)
+                    .padding(.top, 8)
                 HStack(spacing: 4) {
                     Button(action: addAction) { Image(systemName: "plus") }
                         .help("Add an action")
@@ -138,12 +145,26 @@ private struct ActionRow: View {
 struct ActionDetailView: View {
     @Environment(AppState.self) private var state
     @Binding var action: HotkeyAction
-    @StateObject private var sample = Box("мне кажеться, идея хорошая но детали надо абсудить заранее.")
+    @StateObject private var sample: Box<String>
     @StateObject private var output = Box("")
     @StateObject private var testing = Box(false)
     @StateObject private var testError = Box<String?>(nil)
 
+    init(action: Binding<HotkeyAction>) {
+        _action = action
+        _sample = StateObject(wrappedValue: Box(DefaultPrompts.sampleText(for: action.wrappedValue)))
+    }
+
     private var kind: ProviderKind { action.provider ?? state.defaultProvider }
+
+    private var webSearchNote: String {
+        if kind == .apple {
+            return action.webSearch
+                ? "Apple Intelligence works offline and can't search the web, so this action won't run with it. Choose ChatGPT, OpenAI, Claude or Gemini above, or turn this off."
+                : "Not available with Apple Intelligence, which works offline."
+        }
+        return "Before answering, the AI looks things up on the web and thinks longer (High reasoning effort unless you choose one above). Slower, and uses more of your plan or API credit."
+    }
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -180,12 +201,22 @@ struct ActionDetailView: View {
                         ForEach(ReasoningEffort.allCases) { Text($0.title).tag($0.rawValue) }
                     }
                 }
+                VStack(alignment: .leading, spacing: 4) {
+                    Toggle("Search the web and think longer", isOn: $action.webSearch)
+                    Text(webSearchNote)
+                        .font(.caption)
+                        .foregroundStyle(kind == .apple && action.webSearch ? Color.orange : Color.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
 
             Section {
                 TextEditor(text: $action.prompt)
                     .font(.system(.body, design: .default))
                     .frame(minHeight: 170)
+                Text("Write any instruction you like: summarize, reply to an email, explain code, translate into German… The text you captured is sent along with it.")
+                    .font(.caption).foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
                 Toggle("Treat the captured text only as material to transform", isOn: $action.strictTransform)
                 Text(action.strictTransform
                      ? "Questions or commands inside your text are translated or edited, never answered or obeyed. Turn off for prompts like “Answer this” or “Reply to this email”."

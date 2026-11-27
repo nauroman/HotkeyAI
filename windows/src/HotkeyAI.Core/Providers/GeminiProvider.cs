@@ -22,9 +22,11 @@ public sealed class GeminiProvider(string apiKey) : IAIProvider
                 ["parts"] = new JsonArray(new JsonObject { ["text"] = request.Input }),
             }),
         };
+        // Grounding with Google Search. Current Gemini models think on their own.
+        if (request.WebSearch) body["tools"] = new JsonArray(new JsonObject { ["google_search"] = new JsonObject() });
         using var req = Http.JsonRequest(HttpMethod.Post, $"{BaseUrl}/models/{Uri.EscapeDataString(model)}:generateContent",
             Headers(), body);
-        return Parse(await Http.JsonAsync(req, "Gemini", ct));
+        return Parse(await Http.JsonAsync(req, "Gemini", ct, Http.ClientFor(request)));
     }
 
     public static string Parse(JsonObject obj)

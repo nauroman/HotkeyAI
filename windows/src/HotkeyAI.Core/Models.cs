@@ -178,6 +178,7 @@ public sealed class HotkeyAction : ObservableObject
     private string _reasoningEffort = "";
     private CaptureMode _captureMode = CaptureMode.All;
     private bool _strictTransform = true;
+    private bool _webSearch;
     private bool _enabled = true;
 
     [JsonPropertyName("id")] public Guid Id { get => _id; set => Set(ref _id, value); }
@@ -208,12 +209,16 @@ public sealed class HotkeyAction : ObservableObject
 
     /// Wrap the captured text as data so instructions inside it are transformed, not obeyed.
     [JsonPropertyName("strictTransform")] public bool StrictTransform { get => _strictTransform; set => Set(ref _strictTransform, value); }
+
+    /// Let the AI search the web and reason longer, where the provider can.
+    [JsonPropertyName("webSearch")] public bool WebSearch { get => _webSearch; set => Set(ref _webSearch, value); }
     [JsonPropertyName("enabled")] public bool Enabled { get => _enabled; set => Set(ref _enabled, value); }
 
     /// A copy with no event subscribers.
     public HotkeyAction Clone() => new()
     {
         Id = Id, Name = Name, Prompt = Prompt, Shortcut = Shortcut, ProviderId = ProviderId, Model = Model,
-        ReasoningEffort = ReasoningEffort, CaptureMode = CaptureMode, StrictTransform = StrictTransform, Enabled = Enabled,
+        ReasoningEffort = ReasoningEffort, CaptureMode = CaptureMode, StrictTransform = StrictTransform,
+        WebSearch = WebSearch, Enabled = Enabled,
     };
 }
