@@ -146,7 +146,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         alert.informativeText = """
         HotkeyAI lives in the menu bar (the keycap icon). In any text field, press \
         ⌥⌘E to improve your text in English (it translates other languages), or ⌥⇧⌘O to \
-        correct it in the language you typed. ⌥⇧⌘F checks the facts, ⌥⇧⌘J writes a joke \
+        correct it in the language you typed. Type a request, such as “reply that I'll be \
+        late”, and ⌥⇧⌘D does what it says. ⌥⇧⌘F checks the facts, ⌥⇧⌘J writes a joke \
         and ⌥⇧⌘P a poem on the topic.
 
         These actions are just examples. In Settings you can change their prompts and \

@@ -52,15 +52,27 @@ final class AppState {
         static let providerModels = "providerModels"
         static let showHUD = "showHUD"
         static let onboarded = "onboarded.v1"
+        /// Keys of the built-in actions saved actions have been given (DefaultPrompts.builtIns).
+        static let builtInsGiven = "builtInsGiven.v1"
     }
 
     private init() {
         let defaults = UserDefaults.standard
         if let data = defaults.data(forKey: Keys.actions),
-           let saved = try? JSONDecoder().decode([HotkeyAction].self, from: data) {
+           var saved = try? JSONDecoder().decode([HotkeyAction].self, from: data) {
+            // Built-in actions added in an update reach people who have changed their actions too.
+            let given = defaults.stringArray(forKey: Keys.builtInsGiven).map(Set.init) ?? DefaultPrompts.firstBuiltInKeys
+            let count = saved.count
+            let nowGiven = DefaultPrompts.addNewBuiltIns(to: &saved, given: given)
+            if saved.count != count, let data = try? JSONEncoder().encode(saved) {
+                defaults.set(data, forKey: Keys.actions)
+            }
+            defaults.set(nowGiven.sorted(), forKey: Keys.builtInsGiven)
             actions = saved
         } else {
+            // Unsaved actions always follow the current defaults.
             actions = DefaultPrompts.defaultActions
+            defaults.set(DefaultPrompts.builtIns.map(\.key).sorted(), forKey: Keys.builtInsGiven)
         }
         defaultProvider = defaults.string(forKey: Keys.defaultProvider).flatMap(ProviderKind.init(rawValue:)) ?? .apple
         providerModels = defaults.dictionary(forKey: Keys.providerModels) as? [String: String] ?? [:]

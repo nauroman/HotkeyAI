@@ -34,9 +34,10 @@ translate,grammar,proofread,rewrite,writing,english,spelling,editor,polish,short
 **Description** (4000)
 HotkeyAI improves the text you are typing without leaving the app you are in. Press a shortcut in any text field — Mail, Messages, Notes, Slack, a browser — and HotkeyAI replaces your draft with a clearer version.
 
-FIVE ACTIONS TO START WITH
+SIX ACTIONS TO START WITH
 • ⌥⌘E — Improve in English: translates from any language into natural, fluent English, or polishes text that is already in English.
 • ⌥⇧⌘O — Fix in your language: corrects spelling, grammar and punctuation while keeping your own words and tone.
+• ⌥⇧⌘D — Do what the text says: type a request ("reply that I'll be 10 minutes late") and get the result in its place.
 • ⌥⇧⌘F — Fact-check: searches the web and replaces the text with a short report: what was checked, true or false, the correct facts and the sources.
 • ⌥⇧⌘J — Joke on this topic: type a topic and get a short joke in the same language.
 • ⌥⇧⌘P — Poem on this topic: type a topic or a wish ("a birthday poem for my mom") and get a rhymed poem.
@@ -62,7 +63,7 @@ HotkeyAI asks for permission to press ⌘A, ⌘C and ⌘V for you (System Settin
 Apple Intelligence requires a compatible Mac with macOS 26 or later and does not support every language yet; it works offline, so Fact-check and web search need ChatGPT, OpenAI, Claude or Gemini. ChatGPT sign-in requires a ChatGPT Plus or Pro plan. HotkeyAI is open source: github.com/nauroman/HotkeyAI
 
 **What's New** — 1.0: first release, leave empty. Next version:
-New built-in actions: Fact-check (⌥⇧⌘F), Joke on this topic (⌥⇧⌘J) and Poem on this topic (⌥⇧⌘P). Fix in your language moves to ⌥⇧⌘O. Any action can now search the web and think longer. The built-in actions are only examples: change them or add your own in Settings → Actions. Already using HotkeyAI? Choose ⋯ → Add built-in actions again there to get the new ones.
+New built-in actions: Do what the text says (⌥⇧⌘D), Fact-check (⌥⇧⌘F), Joke on this topic (⌥⇧⌘J) and Poem on this topic (⌥⇧⌘P). Fix in your language moves to ⌥⇧⌘O for new users. Any action can now search the web and think longer. The built-in actions are only examples: change them or add your own in Settings → Actions. Already using HotkeyAI? The new actions are added at the end of your list, and your own actions and shortcuts stay as they are.
 
 ## Russian (add localization → Russian)
 
@@ -78,9 +79,10 @@ New built-in actions: Fact-check (⌥⇧⌘F), Joke on this topic (⌥⇧⌘J) a
 **Description** (4000)
 HotkeyAI улучшает текст, который вы набираете, прямо в том приложении, где вы пишете. Нажмите сочетание клавиш в любом текстовом поле — в Почте, Сообщениях, Заметках, Slack или браузере, — и HotkeyAI заменит черновик более ясным вариантом.
 
-ПЯТЬ ДЕЙСТВИЙ ДЛЯ НАЧАЛА
+ШЕСТЬ ДЕЙСТВИЙ ДЛЯ НАЧАЛА
 • ⌥⌘E — улучшить по-английски: переводит с любого языка на естественный английский или улучшает текст, уже написанный по-английски.
 • ⌥⇧⌘O — исправить на вашем языке: исправляет орфографию, грамматику и пунктуацию, сохраняя ваши слова и тон.
+• ⌥⇧⌘D — сделать, что написано: напишите просьбу («ответь, что я опоздаю на 10 минут») и получите готовый результат на её месте.
 • ⌥⇧⌘F — проверка фактов: ищет в интернете и заменяет текст коротким разбором: что проверялось, правда это или нет, верные факты и источники.
 • ⌥⇧⌘J — шутка на тему: напишите тему и получите короткую шутку на том же языке.
 • ⌥⇧⌘P — стихи на тему: напишите тему или пожелание («стих маме на день рождения») и получите стихотворение с рифмой.

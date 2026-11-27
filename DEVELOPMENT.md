@@ -37,11 +37,17 @@ When the Mac App Store version goes live, both apps are in their stores and the 
   - **⌥⌘E** – improve the text in natural English, translating it if it is in another language
     (the Windows tool's prompt, unchanged);
   - **⌥⇧⌘O** – correct it in the language you typed, keeping your own wording and register;
+  - **⌥⇧⌘D** – do what the text says: the text is a request ("reply that I'll be late"), and
+    the result replaces it. It takes the selection if there is one, otherwise the whole field;
   - **⌥⇧⌘F** – fact-check: replaces the text with a short report (what was checked, the verdict, the
     claims with corrections, sources). It has *Search the web and think longer* on;
   - **⌥⇧⌘J** / **⌥⇧⌘P** – a joke / a poem on the topic the text gives, in its language.
-  ⌥⌘ + O/F/J/P is taken in common apps (⌥⌘F is Find and Replace in code editors, ⌥⌘J the
-  JavaScript console in Chrome, ⌥⌘P the path bar in Finder), so those four add ⇧.
+  ⌥⌘ + O/D/F/J/P is taken in macOS or common apps (⌥⌘D shows and hides the Dock, ⌥⌘F is Find
+  and Replace in code editors, ⌥⌘J the JavaScript console in Chrome, ⌥⌘P the path bar in Finder),
+  so those five add ⇧.
+  Built-in actions added in an update reach people whose actions are already saved: each built-in
+  has a key (`DefaultPrompts.builtIns`), and the keys already given are saved next to the actions,
+  so a new one is added once and one the user deleted stays deleted.
   ⌃⌥ + letter is avoided because Rectangle and Magnet use it for window layouts.
 - **Search the web and think longer** (per action): OpenAI/ChatGPT get the Responses `web_search`
   tool, Claude the `web_search` server tool (dynamic filtering on 4.6+, adaptive thinking, `pause_turn`

@@ -8,7 +8,7 @@ script), as a self-contained app for the Microsoft Store.
 | Mac | Windows |
 | --- | --- |
 | Menu bar icon | Notification-area icon (left click: Settings, right click: actions and Quit) |
-| ⌥⌘E, ⌥⇧⌘O/F/J/P | **Win+Alt+E**, **Win+Alt+Shift+O/F/J/P** — the same keys left of the space bar. Ctrl+Alt is avoided: it is AltGr on many European layouts. |
+| ⌥⌘E, ⌥⇧⌘O/D/F/J/P | **Win+Alt+E**, **Win+Alt+Shift+O/D/F/J/P** — the same keys left of the space bar. Ctrl+Alt is avoided: it is AltGr on many European layouts. |
 | ⌘A ⌘C ⌘V via CGEvent | Ctrl+A Ctrl+C Ctrl+V via SendInput. No permission needed; Windows blocks it only for apps running as administrator. |
 | Apple Intelligence (default) | Not available. **ChatGPT sign-in** is the default; OpenAI, Claude and Gemini keys work as on the Mac. |
 | Keychain | DPAPI-encrypted files (only the signed-in Windows user can read them) |

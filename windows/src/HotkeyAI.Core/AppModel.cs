@@ -49,7 +49,7 @@ public sealed class AppModel : ObservableObject, IValueStore
         _store = store;
         _secrets = secrets;
         _data = store.Load();
-        Actions = new ObservableCollection<HotkeyAction>(_data.Actions ?? DefaultPrompts.DefaultActions());
+        Actions = new ObservableCollection<HotkeyAction>(LoadActions());
         _defaultProvider = ProviderInfo.FromId(_data.DefaultProvider) ?? ProviderKind.ChatGPT;
         _showHud = _data.ShowHud;
 
@@ -71,6 +71,25 @@ public sealed class AppModel : ObservableObject, IValueStore
         foreach (var action in Actions) action.PropertyChanged += OnActionChanged;
         Actions.CollectionChanged += OnActionsCollectionChanged;
         _hotkeySignature = HotkeySignature();
+    }
+
+    /// The saved actions, plus built-in ones added in an update, so they reach people who have
+    /// changed their actions too. Unsaved actions always follow the current defaults.
+    private List<HotkeyAction> LoadActions()
+    {
+        if (_data.Actions is null)
+        {
+            _data.BuiltInsGiven = [.. DefaultPrompts.BuiltInKeys];
+            return DefaultPrompts.DefaultActions();
+        }
+        var given = _data.BuiltInsGiven ?? [.. DefaultPrompts.FirstBuiltInKeys];
+        var nowGiven = DefaultPrompts.AddNewBuiltIns(_data.Actions, given);
+        if (!nowGiven.ToHashSet().SetEquals(given))
+        {
+            _data.BuiltInsGiven = nowGiven;
+            _store.Save(_data);
+        }
+        return _data.Actions;
     }
 
     public ProviderKind DefaultProvider

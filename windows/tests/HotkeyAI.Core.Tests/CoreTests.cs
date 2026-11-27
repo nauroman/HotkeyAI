@@ -44,16 +44,52 @@ public class PromptTests
     public void DefaultActionsUseWinAltShortcuts()
     {
         var actions = DefaultPrompts.DefaultActions();
-        Assert.Equal(new[] { "Win+Alt+E", "Win+Alt+Shift+O", "Win+Alt+Shift+F", "Win+Alt+Shift+J", "Win+Alt+Shift+P" },
+        Assert.Equal(new[] { "Win+Alt+E", "Win+Alt+Shift+O", "Win+Alt+Shift+D", "Win+Alt+Shift+F", "Win+Alt+Shift+J",
+                "Win+Alt+Shift+P" },
             actions.Select(a => a.Shortcut!.DisplayString));
         Assert.Contains("American English", actions[0].Prompt);
         Assert.Contains("Keep the author's own voice", actions[1].Prompt);
-        Assert.Contains("Fact-check", actions[2].Prompt);
-        Assert.Contains("joke", actions[3].Prompt);
-        Assert.Contains("poem", actions[4].Prompt);
+        Assert.Contains("Do what the source text asks", actions[2].Prompt);
+        Assert.Contains("Fact-check", actions[3].Prompt);
+        Assert.Contains("joke", actions[4].Prompt);
+        Assert.Contains("poem", actions[5].Prompt);
         // Only Fact-check searches; transformations guard against instructions in the text.
-        Assert.Equal(new[] { false, false, true, false, false }, actions.Select(a => a.WebSearch));
-        Assert.Equal(new[] { true, true, false, false, false }, actions.Select(a => a.StrictTransform));
+        Assert.Equal(new[] { false, false, false, true, false, false }, actions.Select(a => a.WebSearch));
+        Assert.Equal(new[] { true, true, false, false, false, false }, actions.Select(a => a.StrictTransform));
+        // Do takes the selection first: in a reply, select just the request.
+        Assert.Equal("Do what the text says", actions[2].Name);
+        Assert.Equal(CaptureMode.SelectionOrAll, actions[2].CaptureMode);
+        Assert.Equal(DefaultPrompts.BuiltInKeys.Length, actions.Count);
+    }
+
+    [Fact]
+    public void SettingsFromTheFirstVersionGetTheNewActions()
+    {
+        // Saved by 1.0.x: the user edited English, kept Fix on Win+Alt+Shift+E and had Polish elegantly.
+        var actions = DefaultPrompts.DefaultActions().Take(2).ToList();
+        actions[0].Prompt = "My own English prompt";
+        actions[1].Shortcut = new KeyCombo(0x45, HotkeyModifiers.Win | HotkeyModifiers.Alt | HotkeyModifiers.Shift);
+        actions.Add(new HotkeyAction { Name = "Polish elegantly", Prompt = "Polish it." });
+        var given = DefaultPrompts.AddNewBuiltIns(actions, DefaultPrompts.FirstBuiltInKeys);
+        Assert.Equal(new[] { "Improve in English", "Fix in original language", "Polish elegantly", "Do what the text says",
+                "Fact-check", "Joke on this topic", "Poem on this topic" },
+            actions.Select(a => a.Name));
+        Assert.Equal(DefaultPrompts.DoShortcut, actions[3].Shortcut);
+        Assert.Equal(DefaultPrompts.BuiltInKeys, given);
+    }
+
+    [Fact]
+    public void NewBuiltInsSkipDeletedOnesTakenShortcutsAndPromptsThatAreThere()
+    {
+        var english = DefaultPrompts.DefaultActions().Take(1).ToList();
+        _ = DefaultPrompts.AddNewBuiltIns(english, DefaultPrompts.BuiltInKeys);
+        Assert.Single(english);
+
+        var mine = new HotkeyAction { Name = "Mine", Prompt = "Mine.", Shortcut = DefaultPrompts.DoShortcut, Enabled = false };
+        var actions = new List<HotkeyAction> { mine, DefaultPrompts.DefaultActions()[4] };
+        _ = DefaultPrompts.AddNewBuiltIns(actions, ["english", "fix", "factCheck", "poem"]);
+        Assert.Equal(new[] { "Mine", "Joke on this topic", "Do what the text says" }, actions.Select(a => a.Name));
+        Assert.Null(actions[2].Shortcut);
     }
 
     [Fact]
@@ -62,7 +98,7 @@ public class PromptTests
         // The Mac sources are the reference; the Windows copies must not drift.
         var swift = File.ReadAllText(Path.Combine(RepoRoot(), "Sources", "HotkeyAI", "DefaultPrompts.swift")).Replace("\r\n", "\n");
         foreach (var prompt in new[] { DefaultPrompts.TranslateToEnglish, DefaultPrompts.FixInOriginalLanguage,
-                     DefaultPrompts.FactCheck, DefaultPrompts.WriteJoke, DefaultPrompts.WritePoem,
+                     DefaultPrompts.DoWhatItSays, DefaultPrompts.FactCheck, DefaultPrompts.WriteJoke, DefaultPrompts.WritePoem,
                      DefaultPrompts.StrictSourceRule, DefaultPrompts.LightSourceRule })
         {
             var indented = string.Join("\n", prompt.Replace("\r\n", "\n").Split('\n')
@@ -215,7 +251,7 @@ public class AppModelTests : IDisposable
         var secrets = new MemorySecretStore();
         var model = new AppModel(new SettingsStore(_dir), secrets);
         Assert.True(model.IsFirstLaunch);
-        Assert.Equal(5, model.Actions.Count);
+        Assert.Equal(6, model.Actions.Count);
         Assert.Equal(ProviderKind.ChatGPT, model.DefaultProvider);
 
         model.DefaultProvider = ProviderKind.Gemini;
@@ -258,10 +294,10 @@ public class AppModelTests : IDisposable
         model.Actions[2].Shortcut = model.Actions[0].Shortcut;
         Assert.Single(model.Conflicts(model.Actions[0]));
         model.RestoreDefaults();
-        Assert.Equal(10, model.Actions.Count);
-        // Shortcuts already in use are not duplicated; Fact-check's was freed above, so it comes back.
-        Assert.Equal(new KeyCombo?[] { null, null, DefaultPrompts.FactCheckShortcut, null, null },
-            model.Actions.Skip(5).Select(a => a.Shortcut));
+        Assert.Equal(12, model.Actions.Count);
+        // Shortcuts already in use are not duplicated; Do's was freed above, so it comes back.
+        Assert.Equal(new KeyCombo?[] { null, null, DefaultPrompts.DoShortcut, null, null, null },
+            model.Actions.Skip(6).Select(a => a.Shortcut));
         var copy = model.Duplicate(model.Actions[0]);
         Assert.Null(copy.Shortcut);
         Assert.Equal(model.Actions[1], copy);
@@ -273,8 +309,27 @@ public class AppModelTests : IDisposable
         Directory.CreateDirectory(_dir);
         File.WriteAllText(Path.Combine(_dir, "settings.json"), "{ not json");
         var model = new AppModel(new SettingsStore(_dir), new MemorySecretStore());
-        Assert.Equal(5, model.Actions.Count);
+        Assert.Equal(6, model.Actions.Count);
         Assert.True(File.Exists(Path.Combine(_dir, "settings.json.bad")));
+    }
+
+    [Fact]
+    public void UpdateAddsNewBuiltInsOnceAndKeepsDeletionsDeleted()
+    {
+        // Settings saved by 1.0.x had no list of given built-ins.
+        var old = DefaultPrompts.DefaultActions().Take(2).ToList();
+        old.Add(new HotkeyAction { Name = "Polish elegantly", Prompt = "Polish it." });
+        new SettingsStore(_dir).Save(new SettingsData { Actions = old, Onboarded = true });
+
+        var model = new AppModel(new SettingsStore(_dir), new MemorySecretStore());
+        Assert.Equal(7, model.Actions.Count);
+        Assert.Equal("Do what the text says", model.Actions[3].Name);
+
+        model.Actions.RemoveAt(3);
+        model.SaveNow();
+        var reloaded = new AppModel(new SettingsStore(_dir), new MemorySecretStore());
+        Assert.Equal(6, reloaded.Actions.Count);
+        Assert.DoesNotContain(reloaded.Actions, a => a.Name == "Do what the text says");
     }
 
     [Fact]
