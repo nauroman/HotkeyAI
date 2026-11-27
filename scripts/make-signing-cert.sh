@@ -1,7 +1,9 @@
 #!/bin/bash
 # Creates a self-signed code-signing certificate "HotkeyAI Local Signing" in your login
 # keychain. Local builds signed with it keep the same identity, so macOS keeps the
-# Accessibility permission (and Keychain access) across rebuilds.
+# Accessibility permission across rebuilds. It has no team ID, though, so saved API keys and
+# the ChatGPT sign-in are lost on every rebuild; build-app.sh prefers an "Apple Development"
+# certificate when you have one (Xcode → Settings → Accounts → Manage Certificates).
 # It is for development on this Mac only; App Store builds use your Apple certificate.
 set -euo pipefail
 
